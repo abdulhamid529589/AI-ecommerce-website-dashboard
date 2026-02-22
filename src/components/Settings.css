@@ -1,0 +1,93 @@
+.settings-container {
+  min-height: 100vh;
+  background-color: #f9fafb;
+  padding: 1rem;
+}
+
+.dark .settings-container {
+  background-color: #111827;
+}
+
+.settings-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Tabs */
+.tabs-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.tabs-list {
+  display: flex;
+  gap: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  background: white;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.dark .tabs-list {
+  background: #1f2937;
+  border-bottom-color: #374151;
+}
+
+.tab-trigger {
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  color: #6b7280;
+  border-bottom: 2px solid transparent;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.tab-trigger:hover {
+  color: #1f2937;
+}
+
+.dark .tab-trigger {
+  color: #9ca3af;
+}
+
+.dark .tab-trigger:hover {
+  color: #e5e7eb;
+}
+
+.tab-trigger.active {
+  color: #2563eb;
+  border-bottom-color: #2563eb;
+}
+
+.tab-content {
+  animation: fadeIn 0.2s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Form Styles */
+.settings-content input,
+.settings-content textarea,
+.settings-content select {
+  background-color: white;
+  color: #1f2937;
+}
+
+.dark .settings-content input,
+.dark .settings-content textarea,
+.dark .settings-content select {
+  background-color: #111827;
+  color: #f9fafb;
+}

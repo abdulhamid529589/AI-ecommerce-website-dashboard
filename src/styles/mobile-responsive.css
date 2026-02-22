@@ -1,0 +1,363 @@
+/* ===== MOBILE RESPONSIVE DESIGN ===== */
+
+/* Base Mobile Improvements */
+@media (max-width: 768px) {
+  * {
+    tap-highlight-color: transparent;
+  }
+
+  html, body {
+    font-size: 16px;
+  }
+
+  #root {
+    padding: 0;
+    margin: 0;
+  }
+
+  /* Container Padding */
+  .container,
+  main,
+  .main-content {
+    padding: 0 1rem;
+  }
+
+  /* Touch-friendly spacing */
+  button, a, input, select, textarea {
+    font-size: 16px;
+  }
+}
+
+/* Tablet & Medium Devices (768px - 1024px) */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .dashboard-cards {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .chart-container {
+    padding: 1.25rem;
+  }
+
+  main {
+    padding: 1.5rem;
+  }
+}
+
+/* Small Tablets & Large Phones (600px - 768px) */
+@media (max-width: 768px) and (min-width: 601px) {
+  .dashboard-cards {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.875rem;
+  }
+
+  .chart-container {
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .chart-wrapper {
+    height: 250px;
+  }
+
+  main {
+    padding: 1.25rem;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+  }
+}
+
+/* Phones (480px - 600px) */
+@media (max-width: 600px) and (min-width: 481px) {
+  .dashboard-cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .chart-container {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .chart-title {
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .chart-wrapper {
+    height: 200px;
+  }
+
+  main {
+    padding: 1rem;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    font-size: 1.1rem;
+  }
+
+  /* Card layouts */
+  .stats-card {
+    padding: 0.875rem;
+  }
+
+  .stats-card h3 {
+    font-size: 0.85rem;
+  }
+
+  .stats-card .value {
+    font-size: 1.5rem;
+  }
+}
+
+/* Small Phones (max-width: 480px) */
+@media (max-width: 480px) {
+  .dashboard-cards {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .chart-container {
+    padding: 0.875rem;
+    margin-bottom: 0.875rem;
+    border-radius: 0.5rem;
+  }
+
+  .chart-title {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .chart-wrapper {
+    height: 180px;
+  }
+
+  main {
+    padding: 0.75rem;
+  }
+
+  h1 {
+    font-size: 1.35rem;
+    margin-bottom: 0.75rem;
+  }
+
+  h2 {
+    font-size: 1rem;
+  }
+
+  /* Reduce all padding/margins by 20% */
+  .stats-section {
+    margin-bottom: 1rem;
+  }
+
+  .stats-card {
+    padding: 0.75rem;
+  }
+
+  .stats-card h3 {
+    font-size: 0.8rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .stats-card .value {
+    font-size: 1.35rem;
+  }
+
+  .stats-card .change {
+    font-size: 0.7rem;
+  }
+
+  /* Table responsive */
+  table {
+    font-size: 0.85rem;
+  }
+
+  td, th {
+    padding: 0.5rem 0.25rem;
+  }
+
+  /* Form elements */
+  input, select, textarea {
+    padding: 0.75rem 0.5rem;
+    font-size: 16px;
+  }
+
+  button {
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+  }
+
+  /* Modal adjustments */
+  .modal, dialog {
+    max-width: 95vw;
+    margin: 0 auto;
+  }
+
+  /* Navbar adjustments */
+  .navbar, nav {
+    padding: 0.75rem;
+  }
+
+  /* Sidebar collapse on mobile */
+  .sidebar {
+    position: fixed;
+    left: -100%;
+    top: 0;
+    width: 80%;
+    height: 100vh;
+    z-index: 1000;
+    transition: left 0.3s ease;
+  }
+
+  .sidebar.active {
+    left: 0;
+  }
+
+  /* Grid adjustments */
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .grid-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .grid-4 {
+    grid-template-columns: 1fr;
+  }
+
+  /* Flex wrapping */
+  .flex-row {
+    flex-direction: column;
+  }
+
+  /* Hide unnecessary elements */
+  .hide-mobile {
+    display: none !important;
+  }
+
+  /* Show mobile-only elements */
+  .show-mobile {
+    display: block !important;
+  }
+}
+
+/* Landscape Mode Adjustments */
+@media (max-height: 500px) and (orientation: landscape) {
+  .chart-wrapper {
+    height: 150px;
+  }
+
+  main {
+    padding: 0.75rem;
+  }
+
+  h1 {
+    margin-bottom: 0.5rem;
+  }
+
+  .dashboard-cards {
+    margin-bottom: 1rem;
+  }
+}
+
+/* Portrait Mode Optimizations */
+@media (max-width: 480px) and (orientation: portrait) {
+  body {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  main {
+    border-radius: 0;
+  }
+}
+
+/* High DPI Screens (Retina) */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  button, input, select, textarea {
+    border-width: 0.5px;
+  }
+
+  .chart-container {
+    border-width: 0.5px;
+  }
+}
+
+/* Touch Device Enhancements */
+@media (hover: none) and (pointer: coarse) {
+  button:active {
+    opacity: 0.8;
+  }
+
+  a:active {
+    opacity: 0.8;
+  }
+
+  /* Increase touch target size */
+  button, a[role="button"], input[type="button"], input[type="submit"] {
+    min-height: 48px;
+    min-width: 48px;
+    padding: 0.75rem 1rem;
+  }
+
+  /* Remove hover effects on touch */
+  button:hover, a:hover {
+    background-color: inherit;
+  }
+}
+
+/* Accessibility - Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Keyboard Navigation */
+@media (prefers-reduced-motion: no-preference) {
+  :focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+  }
+}
+
+/* Dark Mode Mobile */
+@media (prefers-color-scheme: dark) and (max-width: 480px) {
+  .chart-container {
+    background: #1f2937;
+  }
+
+  main {
+    background: #111827;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .navbar, nav, .sidebar, button, input {
+    display: none;
+  }
+
+  main {
+    padding: 0;
+  }
+
+  .chart-container {
+    page-break-inside: avoid;
+    box-shadow: none;
+  }
+}

@@ -1,0 +1,238 @@
+/* Enforce a full dark UI by mapping common light utility classes to dark tokens.
+   This is a pragmatic override to ensure no white backgrounds remain when the app
+   is forced into dark mode. It intentionally uses !important to override Tailwind
+   utility classes applied throughout the codebase. */
+
+:root,
+html.dark {
+  /* ensure variables are present */
+}
+
+/* BODY & ROOT ELEMENTS */
+html,
+body,
+#root {
+  background-color: #1a1a2e !important;
+  color: var(--foreground, #e0e0e0) !important;
+}
+
+/* ALL BACKGROUNDS - Override white to dark */
+.bg-white {
+  background-color: #16213e !important;
+  color: var(--foreground) !important;
+}
+
+.bg-gray-50,
+.bg-gray-100,
+.bg-gray-200,
+.bg-slate-100,
+.bg-slate-50 {
+  background-color: #1a1a2e !important;
+}
+
+.bg-gray-300,
+.bg-slate-200 {
+  background-color: #0f3460 !important;
+}
+
+.bg-gray-900,
+.bg-slate-900 {
+  background-color: #0b0e27 !important;
+}
+
+/* Cards and surfaces */
+.border-gray-200,
+.border-gray-100,
+.border-slate-200,
+.border-slate-100 {
+  border-color: #2d3561 !important;
+}
+
+.border-gray-300,
+.border-slate-300 {
+  border-color: #3d4571 !important;
+}
+
+/* TEXT - Override light text to dark mode text */
+.text-gray-900,
+.text-black,
+.text-slate-900 {
+  color: #f0f0f0 !important;
+}
+
+.text-gray-800,
+.text-slate-800 {
+  color: #e8e8e8 !important;
+}
+
+.text-gray-700,
+.text-gray-600,
+.text-slate-700,
+.text-slate-600 {
+  color: #d0d0d0 !important;
+}
+
+.text-gray-400,
+.text-gray-500,
+.text-slate-500 {
+  color: #999999 !important;
+}
+
+/* BUTTONS */
+.bg-white.text-gray-900 {
+  background-color: #16213e !important;
+  color: #f0f0f0 !important;
+}
+
+button.bg-white {
+  background-color: #16213e !important;
+}
+
+/* INPUTS */
+input,
+textarea,
+select {
+  background-color: #16213e !important;
+  color: var(--foreground) !important;
+  border-color: #2d3561 !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  background-color: #1f2a52 !important;
+  border-color: #4a5f96 !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #777777 !important;
+}
+
+/* TABLES */
+thead {
+  background-color: #0f3460 !important;
+  color: #f0f0f0 !important;
+}
+
+tbody tr {
+  background-color: #16213e !important;
+  border-color: #2d3561 !important;
+}
+
+tbody tr:hover {
+  background-color: #1f2a52 !important;
+}
+
+td,
+th {
+  border-color: #2d3561 !important;
+  color: var(--foreground) !important;
+}
+
+/* MODALS & DIALOGS */
+.modal-backdrop,
+.react-modal-overlay,
+[role='dialog'],
+.modal {
+  background: rgba(10, 15, 35, 0.8) !important;
+}
+
+/* DROPDOWNS */
+.dropdown-menu,
+[role='menu'],
+select {
+  background-color: #16213e !important;
+  border-color: #2d3561 !important;
+  color: var(--foreground) !important;
+}
+
+/* SHADOWS */
+.shadow,
+.shadow-sm,
+.shadow-md,
+.shadow-lg {
+  box-shadow: 0 6px 24px rgba(2, 6, 23, 0.8) !important;
+}
+
+/* LINKS & ACCENTS */
+.text-blue-600,
+.text-blue-500,
+.text-primary {
+  color: #4a9eff !important;
+}
+
+a {
+  color: #4a9eff !important;
+}
+
+a:hover {
+  color: #6bb3ff !important;
+}
+
+/* TOASTIFY */
+.Toastify__toast-theme--light,
+.Toastify__toast {
+  background: #16213e !important;
+  color: var(--foreground) !important;
+  border-color: #2d3561 !important;
+}
+
+.Toastify__toast-icon {
+  color: var(--foreground) !important;
+}
+
+/* SCROLLBARS */
+::-webkit-scrollbar {
+  background-color: #1a1a2e !important;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #1a1a2e !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #2d3561 !important;
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #3d4571 !important;
+}
+
+/* CHARTS & GRAPHS */
+.recharts-wrapper {
+  background-color: transparent !important;
+}
+
+.recharts-text {
+  fill: var(--foreground) !important;
+}
+
+.recharts-cartesian-axis-tick {
+  color: var(--foreground) !important;
+}
+
+/* DEFENSIVE OVERRIDES */
+*[class*='bg-white'] {
+  background-color: #16213e !important;
+}
+
+*[class*='text-white'] {
+  color: var(--foreground) !important;
+}
+
+/* Ensure body uses background token */
+body {
+  background-color: #1a1a2e !important;
+  color: var(--foreground) !important;
+}
+
+/* Cards with bg-white variants */
+.bg-white.rounded,
+.bg-white.rounded-lg,
+.bg-white.rounded-xl {
+  background-color: #16213e !important;
+}
+
+/* END OVERRIDES */

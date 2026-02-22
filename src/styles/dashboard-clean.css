@@ -1,0 +1,535 @@
+/* ============================================
+   DASHBOARD - CLEAN FRESH START
+   Mobile First Approach
+   ============================================ */
+
+/* Base Container */
+.dashboard-container {
+  width: 100%;
+  background: #f9fafb;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+@media (prefers-color-scheme: dark) {
+  .dashboard-container {
+    background: #111827;
+  }
+}
+
+/* Main Content Area */
+.dashboard-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .dashboard-content {
+    padding: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .dashboard-content {
+    max-width: 1400px;
+    padding: 2.5rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .dashboard-content {
+    max-width: 1600px;
+    padding: 3rem;
+  }
+}
+
+@media (min-width: 1600px) {
+  .dashboard-content {
+    max-width: 1800px;
+    padding: 3.5rem;
+  }
+}
+
+@media (min-width: 1920px) {
+  .dashboard-content {
+    max-width: 2000px;
+    padding: 4rem;
+  }
+}
+
+/* Dashboard Sections */
+.dashboard-section {
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .dashboard-section {
+    margin-bottom: 2.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .dashboard-section {
+    margin-bottom: 3rem;
+  }
+}
+
+@media (min-width: 1920px) {
+  .dashboard-section {
+    margin-bottom: 3.5rem;
+  }
+}
+
+/* Mini Summary Cards Container */
+.dashboard-section:first-child {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+@media (min-width: 480px) {
+  .dashboard-section:first-child {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.2rem;
+  }
+}
+
+@media (min-width: 640px) {
+  .dashboard-section:first-child {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .dashboard-section:first-child {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .dashboard-section:first-child {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .dashboard-section:first-child {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2.2rem;
+  }
+}
+
+@media (min-width: 1600px) {
+  .dashboard-section:first-child {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2.4rem;
+  }
+}
+
+@media (min-width: 1920px) {
+  .dashboard-section:first-child {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 2.6rem;
+  }
+}
+
+/* Chart Containers */
+.charts-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .charts-container {
+    gap: 1.75rem;
+    margin-bottom: 2.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .charts-container {
+    grid-template-columns: 2fr 1.2fr;
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .charts-container {
+    grid-template-columns: 2.2fr 1fr;
+    gap: 2.25rem;
+    margin-bottom: 3rem;
+  }
+}
+
+@media (min-width: 1600px) {
+  .charts-container {
+    gap: 2.5rem;
+    margin-bottom: 3.5rem;
+  }
+}
+
+@media (min-width: 1920px) {
+  .charts-container {
+    grid-template-columns: 2.5fr 1fr;
+    gap: 3rem;
+    margin-bottom: 4rem;
+  }
+}
+
+/* Bottom Charts */
+.charts-bottom-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .charts-bottom-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .charts-bottom-container {
+    gap: 2rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .charts-bottom-container {
+    gap: 2.25rem;
+  }
+}
+
+@media (min-width: 1600px) {
+  .charts-bottom-container {
+    gap: 2.5rem;
+  }
+}
+
+@media (min-width: 1920px) {
+  .charts-bottom-container {
+    gap: 3rem;
+  }
+}
+
+/* Chart Box Wrapper */
+.chart-box {
+  background: white;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+@media (prefers-color-scheme: dark) {
+  .chart-box {
+    background: #1f2937;
+    border-color: #374151;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+}
+
+@media (min-width: 640px) {
+  .chart-box {
+    padding: 1.5rem;
+    border-radius: 0.875rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .chart-box {
+    padding: 2rem;
+    border-radius: 1rem;
+  }
+
+  .chart-box:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    transform: translateY(-4px);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .chart-box:hover {
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+  }
+}
+
+@media (min-width: 1280px) {
+  .chart-box {
+    padding: 2.25rem;
+  }
+}
+
+@media (min-width: 1600px) {
+  .chart-box {
+    padding: 2.5rem;
+  }
+}
+
+@media (min-width: 1920px) {
+  .chart-box {
+    padding: 3rem;
+  }
+}
+
+/* Shared Card Styles */
+.card {
+  background: white;
+  border-radius: 0.75rem;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+  .card {
+    background: #1f2937;
+    border-color: #374151;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+}
+
+@media (min-width: 1024px) {
+  .card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .card:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+  }
+}
+
+/* Text Utilities */
+.text-center {
+  text-align: center;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.text-gray-600 {
+  color: #4b5563;
+}
+
+@media (prefers-color-scheme: dark) {
+  .text-gray-600 {
+    color: #9ca3af;
+  }
+}
+
+.text-gray-900 {
+  color: #111827;
+}
+
+@media (prefers-color-scheme: dark) {
+  .text-gray-900 {
+    color: #f9fafb;
+  }
+}
+
+/* Responsive Typography */
+.text-sm {
+  font-size: 0.875rem;
+}
+
+.text-base {
+  font-size: 1rem;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+}
+
+.text-xl {
+  font-size: 1.25rem;
+}
+
+.text-2xl {
+  font-size: 1.5rem;
+}
+
+.text-3xl {
+  font-size: 1.875rem;
+}
+
+@media (min-width: 1024px) {
+  .text-sm {
+    font-size: 0.95rem;
+  }
+
+  .text-base {
+    font-size: 1.1rem;
+  }
+
+  .text-lg {
+    font-size: 1.25rem;
+  }
+
+  .text-xl {
+    font-size: 1.5rem;
+  }
+
+  .text-2xl {
+    font-size: 1.875rem;
+  }
+
+  .text-3xl {
+    font-size: 2.25rem;
+  }
+}
+
+@media (min-width: 1920px) {
+  .text-sm {
+    font-size: 1rem;
+  }
+
+  .text-base {
+    font-size: 1.15rem;
+  }
+
+  .text-lg {
+    font-size: 1.35rem;
+  }
+
+  .text-xl {
+    font-size: 1.65rem;
+  }
+
+  .text-2xl {
+    font-size: 2rem;
+  }
+
+  .text-3xl {
+    font-size: 2.5rem;
+  }
+}
+
+/* Spacing Utilities */
+.gap-1 {
+  gap: 0.5rem;
+}
+.gap-2 {
+  gap: 1rem;
+}
+.gap-3 {
+  gap: 1.5rem;
+}
+.gap-4 {
+  gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .gap-1 {
+    gap: 0.75rem;
+  }
+  .gap-2 {
+    gap: 1.25rem;
+  }
+  .gap-3 {
+    gap: 2rem;
+  }
+  .gap-4 {
+    gap: 2.5rem;
+  }
+}
+
+.p-2 {
+  padding: 0.75rem;
+}
+.p-3 {
+  padding: 1rem;
+}
+.p-4 {
+  padding: 1.5rem;
+}
+.p-6 {
+  padding: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .p-2 {
+    padding: 1rem;
+  }
+  .p-3 {
+    padding: 1.5rem;
+  }
+  .p-4 {
+    padding: 2rem;
+  }
+  .p-6 {
+    padding: 3rem;
+  }
+}
+
+.mb-2 {
+  margin-bottom: 0.75rem;
+}
+.mb-3 {
+  margin-bottom: 1rem;
+}
+.mb-4 {
+  margin-bottom: 1.5rem;
+}
+.mb-6 {
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .mb-2 {
+    margin-bottom: 1rem;
+  }
+  .mb-3 {
+    margin-bottom: 1.5rem;
+  }
+  .mb-4 {
+    margin-bottom: 2rem;
+  }
+  .mb-6 {
+    margin-bottom: 3rem;
+  }
+}
+
+/* Safe Area Support */
+@supports (padding: max(0px)) {
+  .dashboard-content {
+    padding-left: max(1.5rem, env(safe-area-inset-left));
+    padding-right: max(1.5rem, env(safe-area-inset-right));
+    padding-top: max(1.5rem, env(safe-area-inset-top));
+    padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+  }
+
+  @media (min-width: 640px) {
+    .dashboard-content {
+      padding-left: max(2rem, env(safe-area-inset-left));
+      padding-right: max(2rem, env(safe-area-inset-right));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .dashboard-content {
+      padding-left: max(2.5rem, env(safe-area-inset-left));
+      padding-right: max(2.5rem, env(safe-area-inset-right));
+    }
+  }
+}

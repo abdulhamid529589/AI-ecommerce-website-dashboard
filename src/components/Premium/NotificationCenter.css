@@ -1,0 +1,238 @@
+/* ============================================
+   NOTIFICATION CENTER STYLES
+   Toast notifications with smooth animations
+   ============================================ */
+
+.notification-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.75rem;
+  pointer-events: none;
+}
+
+/* Individual Toast Container */
+.toast-notification {
+  animation:
+    slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards,
+    slideOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) reverse paused;
+  animation-fill-mode: forwards;
+}
+
+.toast-notification.animating-out {
+  animation-name: slideOut;
+  animation-duration: 0.3s;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(400px) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) translateY(0);
+  }
+}
+
+@keyframes slideOut {
+  from {
+    opacity: 1;
+    transform: translateX(0) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(400px) translateY(-20px);
+  }
+}
+
+/* Animate Slide In Class */
+.animate-slide-in {
+  animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Toast Type Specific Styles */
+.toast-notification.success {
+  --toast-bg: rgb(34, 197, 94);
+  --toast-dark-bg: rgb(21, 128, 61);
+  --toast-shadow: 0 4px 20px rgba(34, 197, 94, 0.25);
+}
+
+.toast-notification.error {
+  --toast-bg: rgb(239, 68, 68);
+  --toast-dark-bg: rgb(220, 38, 38);
+  --toast-shadow: 0 4px 20px rgba(239, 68, 68, 0.25);
+}
+
+.toast-notification.warning {
+  --toast-bg: rgb(249, 115, 22);
+  --toast-dark-bg: rgb(234, 88, 12);
+  --toast-shadow: 0 4px 20px rgba(249, 115, 22, 0.25);
+}
+
+.toast-notification.info {
+  --toast-bg: rgb(59, 130, 246);
+  --toast-dark-bg: rgb(37, 99, 235);
+  --toast-shadow: 0 4px 20px rgba(59, 130, 246, 0.25);
+}
+
+/* Icon Animation */
+.toast-notification svg {
+  animation: iconBounce 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes iconBounce {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) rotate(-45deg);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+/* Toast Hover Effect */
+.toast-notification {
+  transition:
+    transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.toast-notification:hover {
+  transform: translateY(-4px);
+}
+
+/* Progress Bar for Auto-Dismiss */
+.toast-notification::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: currentColor;
+  border-radius: 0 0 0.75rem 0;
+  opacity: 0.5;
+  animation: progressBar 4s linear forwards;
+}
+
+@keyframes progressBar {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
+
+/* Close Button Styles */
+.toast-notification button {
+  will-change: transform, background-color;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  font-size: inherit;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.toast-notification button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1) rotate(90deg);
+}
+
+.toast-notification button:active {
+  transform: scale(0.95) rotate(90deg);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .notification-container {
+    right: 1rem;
+    left: 1rem;
+    align-items: stretch;
+  }
+
+  .toast-notification {
+    width: 100%;
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(-100%) translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0) translateY(0);
+    }
+  }
+
+  @keyframes slideOut {
+    from {
+      opacity: 1;
+      transform: translateX(0) translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(-100%) translateY(-20px);
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .notification-container {
+    right: 0.5rem;
+    left: 0.5rem;
+    top: 0.5rem;
+  }
+
+  .toast-notification {
+    font-size: 0.875rem;
+    padding: 0.75rem;
+  }
+}
+
+/* Accessibility - Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .toast-notification,
+  .toast-notification button,
+  .toast-notification svg {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .toast-notification::after {
+    animation: none !important;
+  }
+
+  .toast-notification:hover {
+    transform: none;
+  }
+}
+
+/* Focus States for Keyboard Navigation */
+.toast-notification button:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 1px;
+}
+
+.toast-notification button:focus-visible:not(:focus-visible) {
+  outline: none;
+}
+
+/* Print Styles */
+@media print {
+  .notification-container {
+    display: none;
+  }
+}

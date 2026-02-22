@@ -1,0 +1,119 @@
+/* Customer Analytics Styles */
+
+.customer-analytics {
+  width: 100%;
+}
+
+.segments-container,
+.ltv-container {
+  margin-bottom: 40px;
+}
+
+.segments-container h3,
+.ltv-container h3 {
+  margin: 0 0 20px 0;
+  color: #333;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.segments-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.segment-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s;
+}
+
+.segment-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.segment-card h4 {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.segment-count {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 10px 0;
+  display: block;
+}
+
+.segment-card p {
+  margin: 8px 0;
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+.ltv-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.ltv-table thead {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.ltv-table th {
+  padding: 15px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.ltv-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 14px;
+}
+
+.ltv-table tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.ltv-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+@media (max-width: 768px) {
+  .segments-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ltv-table {
+    font-size: 12px;
+  }
+
+  .ltv-table th,
+  .ltv-table td {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .segments-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ltv-table {
+    overflow-x: auto;
+  }
+}

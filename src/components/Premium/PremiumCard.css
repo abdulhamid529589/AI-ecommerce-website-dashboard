@@ -1,0 +1,125 @@
+/**
+ * PREMIUM CARD STYLES - GLASS MORPHISM & ANIMATIONS
+ */
+
+.premium-card {
+  --card-color: currentColor;
+  position: relative;
+  transform: translateZ(0);
+  will-change: transform, box-shadow, border-color;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Glow Effect on Hover */
+.premium-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 100%);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.premium-card:hover::before {
+  opacity: 1;
+}
+
+/* Smooth Shadow Animation */
+.premium-card {
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.08),
+    0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.premium-card:hover {
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.12),
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+
+/* Loading Animation */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.premium-card .animate-pulse {
+  background: linear-gradient(
+    90deg,
+    rgba(200, 200, 200, 0.2) 0%,
+    rgba(200, 200, 200, 0.5) 50%,
+    rgba(200, 200, 200, 0.2) 100%
+  );
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Icon Scale Animation */
+.premium-card:hover .rounded-xl {
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* Bottom Border Animation */
+.premium-card:hover .h-1 {
+  animation: slideIn 0.5s ease;
+}
+
+@keyframes slideIn {
+  from {
+    width: 0;
+    opacity: 0;
+  }
+  to {
+    width: 100%;
+    opacity: 1;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .premium-card {
+    background: linear-gradient(135deg, rgba(30, 30, 46, 0.4) 0%, rgba(17, 24, 39, 0.2) 100%);
+    border-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .premium-card:hover {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .premium-card {
+    padding: 1.25rem;
+  }
+
+  .premium-card h3 {
+    font-size: 0.875rem;
+  }
+
+  .premium-card p {
+    font-size: 1.75rem;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .premium-card,
+  .premium-card::before,
+  .premium-card:hover .rounded-xl {
+    transition: none !important;
+    animation: none !important;
+  }
+}
