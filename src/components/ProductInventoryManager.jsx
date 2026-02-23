@@ -42,15 +42,26 @@ export default function ProductInventoryManager() {
     featured: false,
     status: 'active',
   })
+  const [csrfToken, setCsrfToken] = useState('')
 
   const categories = ['Electronics', 'Clothing', 'Books', 'Home', 'Sports', 'Beauty']
 
-  // Fetch products
+  // Fetch products and CSRF token
   useEffect(() => {
     fetchProducts()
+    fetchCSRFToken()
   }, [])
 
-  const fetchProducts = async () => {
+  const fetchCSRFToken = async () => {
+    try {
+      const response = await api.get('/csrf-token')
+      if (response.data?.csrfToken) {
+        setCsrfToken(response.data.csrfToken)
+      }
+    } catch (error) {
+      console.error('Failed to fetch CSRF token:', error)
+    }
+  }
     try {
       setLoading(true)
       const res = await api.get('/product')
@@ -139,13 +150,23 @@ export default function ProductInventoryManager() {
 
   const handleSave = async () => {
     try {
+      const token = localStorage.getItem('accessToken') || localStorage.getItem('token')
       if (modalMode === 'create') {
         const response = await api.post('/product/admin/create', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'X-CSRF-Token': csrfToken,
+            Authorization: token ? `Bearer ${token}` : '',
+          },
         })
         if (!response.data.success) throw new Error(response.data.message)
       } else {
-        const response = await api.put(`/product/admin/update/${selectedProduct.id}`, formData)
+        const response = await api.put(`/product/admin/update/${selectedProduct.id}`, formData, {
+          headers: {
+            'X-CSRF-Token': csrfToken,
+            Authorization: token ? `Bearer ${token}` : '',
+          },
+        })
         if (!response.data.success) throw new Error(response.data.message)
       }
       await fetchProducts()

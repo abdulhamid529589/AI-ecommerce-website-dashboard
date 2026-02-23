@@ -94,11 +94,25 @@ const EnhancedProductModal = ({ product, onClose, onSuccess, isNew = true }) => 
   const [imageFiles, setImageFiles] = useState([])
   const [imagePreviewUrls, setImagePreviewUrls] = useState(product?.images || [])
   const [newTag, setNewTag] = useState('')
+  const [csrfToken, setCsrfToken] = useState('') // Store CSRF token
 
-  // Fetch categories and tags on mount
+  // Fetch CSRF token and categories/tags on mount
   useEffect(() => {
+    fetchCSRFToken()
     fetchCategoriesAndTags()
   }, [])
+
+  // ✅ FIX: Fetch CSRF token for form submission
+  const fetchCSRFToken = async () => {
+    try {
+      const response = await api.get('/csrf-token')
+      if (response.data?.csrfToken) {
+        setCsrfToken(response.data.csrfToken)
+      }
+    } catch (error) {
+      console.error('Failed to fetch CSRF token:', error)
+    }
+  }
 
   const fetchCategoriesAndTags = async () => {
     try {
@@ -298,7 +312,13 @@ const EnhancedProductModal = ({ product, onClose, onSuccess, isNew = true }) => 
 
       const method = isNew ? api.post : api.put
 
-      const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {}
+      // ✅ FIX: Include CSRF token and Authorization header
+      const config = {
+        headers: {
+          Authorization: token ? `Bearer ${token}` : '',
+          'X-CSRF-Token': csrfToken || '', // Add CSRF token for state-changing requests
+        },
+      }
       await method(endpoint, submitData, config)
 
       toast.success(isNew ? 'Product created successfully' : 'Product updated successfully')
