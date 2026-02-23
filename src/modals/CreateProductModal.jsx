@@ -130,7 +130,7 @@ const CreateProductModal = ({ onClose, onSuccess }) => {
         <form onSubmit={handleSubmit} className="modal-form">
           {/* Product Name */}
           <div className="form-group">
-            <label className="form-label">Product Name *</label>
+            <label className="form-label">Name *</label>
             <input
               type="text"
               placeholder="Enter product name"
@@ -169,6 +169,18 @@ const CreateProductModal = ({ onClose, onSuccess }) => {
                 type="number"
                 placeholder="Enter price"
                 value={formData.price}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    price: e.target.value,
+                  })
+                }
+                className="form-input"
+                min="0"
+                step="0.01"
+                required
+              />
+            </div>
                 onChange={(e) =>
                   setFormData({
                     ...formData,
@@ -227,9 +239,9 @@ const CreateProductModal = ({ onClose, onSuccess }) => {
 
           {/* Description */}
           <div className="form-group">
-            <label className="form-label">Description (optional)</label>
+            <label className="form-label">Description *</label>
             <textarea
-              placeholder="Enter product description (optional)"
+              placeholder="Enter product description"
               value={formData.description}
               onChange={(e) =>
                 setFormData({

@@ -25,6 +25,7 @@ export default function ProductInventoryManager() {
   const [modalMode, setModalMode] = useState('create') // create or edit
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [stats, setStats] = useState({
     totalProducts: 0,
     lowStockItems: 0,
@@ -428,14 +429,14 @@ export default function ProductInventoryManager() {
             <div className="space-y-4">
               <input
                 type="text"
-                placeholder="Product Name"
+                placeholder="Product Name *"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
 
               <textarea
-                placeholder="Description"
+                placeholder="Description *"
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -444,7 +445,7 @@ export default function ProductInventoryManager() {
 
               <input
                 type="number"
-                placeholder="Price"
+                placeholder="Price (৳) *"
                 value={formData.price}
                 onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                 className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -455,7 +456,7 @@ export default function ProductInventoryManager() {
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                 className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="">Select Category</option>
+                <option value="">Select Category (optional)</option>
                 {categories.map((cat) => (
                   <option key={cat} value={cat}>
                     {cat}
@@ -465,7 +466,7 @@ export default function ProductInventoryManager() {
 
               <input
                 type="number"
-                placeholder="Stock"
+                placeholder="Stock Quantity *"
                 value={formData.stock}
                 onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
                 className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"

@@ -425,11 +425,11 @@ const EnhancedProductModal = ({ product, onClose, onSuccess, isNew = true }) => 
               </div>
 
               <div className="form-group">
-                <label className="form-label">Full Description (optional)</label>
+                <label className="form-label">Full Description *</label>
                 <textarea
                   value={formData.fullDescription}
                   onChange={(e) => setFormData({ ...formData, fullDescription: e.target.value })}
-                  placeholder="Detailed product description - optional"
+                  placeholder="Detailed product description"
                   className="form-textarea"
                   rows={6}
                 />
@@ -497,12 +497,12 @@ const EnhancedProductModal = ({ product, onClose, onSuccess, isNew = true }) => 
                 </div>
 
                 <div className="form-group flex-1">
-                  <label className="form-label">Sale Price (৳)</label>
+                  <label className="form-label">Sale Price (৳) - optional</label>
                   <input
                     type="number"
                     value={formData.salePrice}
                     onChange={(e) => setFormData({ ...formData, salePrice: e.target.value })}
-                    placeholder="0.00"
+                    placeholder="0.00 (optional)"
                     className="form-input"
                     step="0.01"
                     min="0"
@@ -510,12 +510,12 @@ const EnhancedProductModal = ({ product, onClose, onSuccess, isNew = true }) => 
                 </div>
 
                 <div className="form-group flex-1">
-                  <label className="form-label">Cost Price (৳)</label>
+                  <label className="form-label">Cost Price (৳) - optional</label>
                   <input
                     type="number"
                     value={formData.costPrice}
                     onChange={(e) => setFormData({ ...formData, costPrice: e.target.value })}
-                    placeholder="0.00"
+                    placeholder="0.00 (optional)"
                     className="form-input"
                     step="0.01"
                     min="0"
@@ -714,7 +714,7 @@ const EnhancedProductModal = ({ product, onClose, onSuccess, isNew = true }) => 
           {activeTab === 'categories' && (
             <div className="tab-content">
               <div className="form-group">
-                <label className="form-label">Categories *</label>
+                <label className="form-label">Categories - optional</label>
                 <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded border border-gray-200 dark:border-gray-600 max-h-64 overflow-y-auto">
                   {categories.map((cat) => (
                     <label key={cat.id} className="form-checkbox block mb-2">
@@ -730,13 +730,13 @@ const EnhancedProductModal = ({ product, onClose, onSuccess, isNew = true }) => 
               </div>
 
               <div className="form-group">
-                <label className="form-label">Tags</label>
+                <label className="form-label">Tags - optional</label>
                 <div className="flex gap-2 mb-4">
                   <input
                     type="text"
                     value={newTag}
                     onChange={(e) => setNewTag(e.target.value)}
-                    placeholder="Add a tag"
+                    placeholder="Add a tag (optional)"
                     className="form-input flex-1"
                     onKeyPress={(e) => e.key === 'Enter' && handleAddTag(e)}
                   />
@@ -972,25 +972,25 @@ const EnhancedProductModal = ({ product, onClose, onSuccess, isNew = true }) => 
               </div>
 
               <div className="form-group">
-                <label className="form-label">Meta Title (50-60 chars)</label>
+                <label className="form-label">Meta Title (50-60 chars) - optional</label>
                 <input
                   type="text"
                   value={formData.metaTitle}
                   onChange={(e) => setFormData({ ...formData, metaTitle: e.target.value })}
                   maxLength={60}
-                  placeholder="Page title for search engines"
+                  placeholder="Page title for search engines (optional)"
                   className="form-input"
                 />
                 <div className="text-xs text-gray-500">{formData.metaTitle.length}/60</div>
               </div>
 
               <div className="form-group">
-                <label className="form-label">Meta Description (150-160 chars)</label>
+                <label className="form-label">Meta Description (150-160 chars) - optional</label>
                 <textarea
                   value={formData.metaDescription}
                   onChange={(e) => setFormData({ ...formData, metaDescription: e.target.value })}
                   maxLength={160}
-                  placeholder="Page description for search engines"
+                  placeholder="Page description for search engines (optional)"
                   className="form-textarea"
                   rows={3}
                 />
