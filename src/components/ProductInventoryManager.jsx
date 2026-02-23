@@ -62,6 +62,8 @@ export default function ProductInventoryManager() {
       console.error('Failed to fetch CSRF token:', error)
     }
   }
+
+  const fetchProducts = async () => {
     try {
       setLoading(true)
       const res = await api.get('/product')
