@@ -11,6 +11,8 @@ import {
   GripVertical,
   ChevronDown,
   ChevronUp,
+  Upload,
+  Image as ImageIcon,
 } from 'lucide-react'
 import api, { API_PREFIX } from '../lib/axios'
 
@@ -24,6 +26,8 @@ export default function CategoryCollectionManager() {
   const [modalMode, setModalMode] = useState('create')
   const [selectedItem, setSelectedItem] = useState(null)
   const [expandedItem, setExpandedItem] = useState(null)
+  const [imageUploadLoading, setImageUploadLoading] = useState(false)
+  const [imagePreview, setImagePreview] = useState(null)
 
   const [formData, setFormData] = useState({
     name: '',
@@ -104,6 +108,8 @@ export default function CategoryCollectionManager() {
       parentCategory: null,
       products: [],
     })
+    setImagePreview(null)
+    setImageUploadLoading(false)
     setModalMode('create')
     setShowModal(true)
   }
@@ -113,6 +119,63 @@ export default function CategoryCollectionManager() {
       .toLowerCase()
       .replace(/\s+/g, '-')
       .replace(/[^\w-]/g, '')
+  }
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      alert('Please select a valid image file')
+      return
+    }
+
+    // Validate file size (5MB max)
+    const maxSize = 5 * 1024 * 1024
+    if (file.size > maxSize) {
+      alert('Image size must be less than 5MB')
+      return
+    }
+
+    try {
+      setImageUploadLoading(true)
+
+      // Create preview
+      const reader = new FileReader()
+      reader.onloadend = () => setImagePreview(reader.result)
+      reader.readAsDataURL(file)
+
+      // Upload to backend (which authenticates with Cloudinary)
+      const uploadFormData = new FormData()
+      uploadFormData.append('file', file)
+
+      // axios interceptor handles FormData correctly (removes default Content-Type header)
+      const response = await api.post('/admin/upload/image', uploadFormData)
+
+      const data = response.data
+
+      // Set the secure URL from Cloudinary (via backend)
+      setFormData((prev) => ({
+        ...prev,
+        image: data.secure_url,
+      }))
+
+      console.log('Image uploaded successfully:', data.secure_url)
+    } catch (error) {
+      console.error('Image upload error:', {
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        message: error.response?.data?.message || error.message,
+        error: error.response?.data?.error,
+      })
+      alert(
+        `Upload failed: ${error.response?.data?.message || error.message}\n\nMake sure the image is less than 5MB and in a supported format (JPG, PNG, GIF, WebP).`,
+      )
+      // Keep the preview even if upload failed
+    } finally {
+      setImageUploadLoading(false)
+    }
   }
 
   const handleSave = async () => {
@@ -128,17 +191,45 @@ export default function CategoryCollectionManager() {
             subcategories: formData.subcategories || [],
           }
           const updatedCategories = [...categories, newCategory]
+
+          console.log('Sending categories to API:', {
+            count: updatedCategories.length,
+            firstItem: updatedCategories[0],
+            totalDataSize: JSON.stringify(updatedCategories).length,
+          })
+
           await api.post('/admin/settings/categories', updatedCategories)
           await loadCategories()
+          console.log(
+            '✅ Category saved successfully! It will appear in the shop within 30 seconds.',
+          )
         } else {
           const updated = categories.map((c) => (c.id === selectedItem.id ? updatedData : c))
           await api.post('/admin/settings/categories', updated)
           await loadCategories()
+          console.log(
+            '✅ Category updated successfully! Changes will appear in the shop within 30 seconds.',
+          )
         }
         setShowModal(false)
+        setImagePreview(null)
+        setImageUploadLoading(false)
+        alert('✅ Category saved successfully! It will appear on the shop within 30 seconds.')
       } catch (error) {
-        console.error('Failed to save category:', error)
-        alert('Failed to save category. Please try again.')
+        console.error('Failed to save category:', {
+          status: error.response?.status,
+          data: error.response?.data,
+          message: error.message,
+          fullError: error,
+        })
+
+        const errorMsg =
+          error.response?.data?.message ||
+          error.response?.data?.error ||
+          error.message ||
+          'Failed to save category. Please try again.'
+
+        alert(`Error: ${errorMsg}`)
       }
     }
   }
@@ -151,8 +242,16 @@ export default function CategoryCollectionManager() {
           await api.post('/admin/settings/categories', updated)
           await loadCategories()
         } catch (error) {
-          console.error('Failed to delete category:', error)
-          alert('Failed to delete category. Please try again.')
+          console.error('Failed to delete category:', {
+            status: error.response?.status,
+            data: error.response?.data,
+            message: error.message,
+          })
+          const errorMsg =
+            error.response?.data?.message ||
+            error.response?.data?.error ||
+            'Failed to delete category. Please try again.'
+          alert(`Error: ${errorMsg}`)
         }
       } else {
         setCollections(collections.filter((c) => c.id !== id))
@@ -167,7 +266,16 @@ export default function CategoryCollectionManager() {
         await api.post('/admin/settings/categories', updated)
         await loadCategories()
       } catch (error) {
-        console.error('Failed to update category visibility:', error)
+        console.error('Failed to update category visibility:', {
+          status: error.response?.status,
+          data: error.response?.data,
+          message: error.message,
+        })
+        const errorMsg =
+          error.response?.data?.message ||
+          error.response?.data?.error ||
+          'Failed to update category. Please try again.'
+        alert(`Error: ${errorMsg}`)
       }
     }
   }
@@ -457,13 +565,68 @@ export default function CategoryCollectionManager() {
                     className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
 
-                  <input
-                    type="text"
-                    placeholder="Image URL"
-                    value={formData.image}
-                    onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                    className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
+                  <div className="space-y-3">
+                    {/* Image Preview */}
+                    {(imagePreview || formData.image) && (
+                      <div className="relative w-full h-40 bg-slate-800 rounded-lg overflow-hidden border-2 border-slate-600">
+                        <img
+                          src={imagePreview || formData.image}
+                          alt="Preview"
+                          className="w-full h-full object-cover"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setFormData({ ...formData, image: '' })
+                            setImagePreview(null)
+                          }}
+                          className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-2 rounded-lg transition"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Image URL Input (optional) */}
+                    <input
+                      type="text"
+                      placeholder="Image URL (optional - paste URL or upload below)"
+                      value={formData.image}
+                      onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                      className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+
+                    {/* File Upload Input */}
+                    <label className="flex items-center justify-center w-full px-4 py-3 bg-slate-700 border-2 border-dashed border-blue-500 rounded-lg cursor-pointer hover:bg-slate-600 transition">
+                      <div className="flex flex-col items-center gap-2">
+                        {imageUploadLoading ? (
+                          <>
+                            <div className="animate-spin">
+                              <Upload size={20} className="text-blue-400" />
+                            </div>
+                            <span className="text-sm text-slate-300">Uploading...</span>
+                          </>
+                        ) : (
+                          <>
+                            <ImageIcon size={20} className="text-blue-400" />
+                            <span className="text-sm text-slate-300">
+                              {formData.image ? 'Change Image' : 'Upload Image'}
+                            </span>
+                          </>
+                        )}
+                      </div>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        disabled={imageUploadLoading}
+                        className="hidden"
+                      />
+                    </label>
+                    <p className="text-xs text-slate-400">
+                      Max file size: 5MB. Supported: JPG, PNG, GIF, WebP
+                    </p>
+                  </div>
                 </>
               )}
 
@@ -479,7 +642,11 @@ export default function CategoryCollectionManager() {
 
               <div className="flex gap-3 pt-4">
                 <button
-                  onClick={() => setShowModal(false)}
+                  onClick={() => {
+                    setShowModal(false)
+                    setImagePreview(null)
+                    setImageUploadLoading(false)
+                  }}
                   className="flex-1 px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg transition"
                 >
                   Cancel

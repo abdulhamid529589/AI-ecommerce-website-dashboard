@@ -216,6 +216,16 @@ const EnhancedProductModal = ({ product, onClose, onSuccess, isNew = true }) => 
       return
     }
 
+    if (!formData.selectedCategories || formData.selectedCategories.length === 0) {
+      toast.error('Please select at least one category')
+      return
+    }
+
+    if (!formData.fullDescription) {
+      toast.error('Please provide a product description')
+      return
+    }
+
     setLoading(true)
     try {
       const token = localStorage.getItem('accessToken') || localStorage.getItem('token')
@@ -226,7 +236,7 @@ const EnhancedProductModal = ({ product, onClose, onSuccess, isNew = true }) => 
       submitData.append('name', formData.name)
       submitData.append('description', formData.fullDescription)
       submitData.append('price', formData.regularPrice)
-      submitData.append('category', formData.selectedCategories[0] || '')
+      submitData.append('category', formData.selectedCategories[0])
       submitData.append('stock', formData.stockQuantity)
 
       // Optional fields - all mapped with correct snake_case names
@@ -286,9 +296,15 @@ const EnhancedProductModal = ({ product, onClose, onSuccess, isNew = true }) => 
       toast.success(isNew ? 'Product created successfully' : 'Product updated successfully')
       onSuccess()
     } catch (error) {
-      logOperationErrorMessage(isNew ? 'createProduct' : 'updateProduct', error)
-      toast.error(error.response?.data?.message || 'Failed to save product')
-      console.error(error)
+      const errorMsg = getOperationErrorMessage(isNew ? 'createProduct' : 'updateProduct', error)
+      const validationErrors = error.response?.data?.errors
+      const detailedMessage = validationErrors
+        ? `Validation failed: ${Object.entries(validationErrors)
+            .map(([key, val]) => `${key}: ${val}`)
+            .join(', ')}`
+        : errorMsg || error.response?.data?.message || 'Failed to save product'
+      toast.error(detailedMessage)
+      console.error('Product save error:', error.response?.data || error.message)
     } finally {
       setLoading(false)
     }

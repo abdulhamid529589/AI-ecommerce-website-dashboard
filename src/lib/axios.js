@@ -92,10 +92,19 @@ api.interceptors.request.use((config) => {
     config.headers = config.headers || {}
     config.headers['X-CSRF-Token'] = csrfToken
 
-    // Also send in body as _csrf for fallback
-    if (config.data && typeof config.data === 'object') {
+    // Also send in body as _csrf for fallback (but NOT for arrays)
+    // For FormData, append as field; for objects, add as property
+    if (config.data instanceof FormData) {
+      config.data.append('_csrf', csrfToken)
+    } else if (config.data && typeof config.data === 'object' && !Array.isArray(config.data)) {
       config.data._csrf = csrfToken
     }
+  }
+
+  // For FormData (file uploads), delete the default Content-Type so axios
+  // will automatically set it to multipart/form-data with proper boundary
+  if (config.data instanceof FormData) {
+    delete config.headers['Content-Type']
   }
 
   return config
