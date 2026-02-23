@@ -66,7 +66,7 @@ const ProductManagement = () => {
   // Fetch Categories from Settings API
   const fetchCategories = useCallback(async () => {
     try {
-      const response = await api.get('/admin/settings/categories')
+      const response = await api.get(`/admin/settings/categories?_t=${Date.now()}`)
       const cats = Array.isArray(response.data) ? response.data : response.data?.categories || []
       const categoryNames = cats.map((cat) => cat.name)
       setCategories(

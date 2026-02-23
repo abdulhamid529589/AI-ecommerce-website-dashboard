@@ -15,6 +15,8 @@ import {
   Image as ImageIcon,
 } from 'lucide-react'
 import api, { API_PREFIX } from '../lib/axios'
+import { useSocket } from '../hooks/useSocket'
+import io from 'socket.io-client'
 
 export default function CategoryCollectionManager() {
   const [categories, setCategories] = useState([])
@@ -45,11 +47,50 @@ export default function CategoryCollectionManager() {
   useEffect(() => {
     loadCategories()
     loadCollections()
+
+    // Set up Socket.io listener for real-time category updates
+    try {
+      const socketUrl = import.meta.env.VITE_SOCKET_URL
+      const socket = io(socketUrl, {
+        transports: ['websocket', 'polling'],
+        reconnection: true,
+        reconnectionDelay: 1000,
+        reconnectionDelayMax: 5000,
+        reconnectionAttempts: 5,
+      })
+
+      socket.on('connect', () => {
+        console.log('✅ [CategoryManager] Connected to Socket.IO:', socket.id)
+        socket.emit('identify', { role: 'dashboard' })
+      })
+
+      socket.on('categories:updated', (data) => {
+        console.log('🔄 [CategoryManager] Categories updated via Socket.IO:', data)
+        if (data.categories) {
+          setCategories(data.categories)
+        }
+      })
+
+      socket.on('categories:changed', (data) => {
+        console.log('🔄 [CategoryManager] Category changed:', data)
+        // Reload categories when changes occur
+        loadCategories()
+      })
+
+      return () => {
+        socket.off('categories:updated')
+        socket.off('categories:changed')
+        socket.off('connect')
+        socket.disconnect()
+      }
+    } catch (error) {
+      console.warn('⚠️ Socket.io initialization failed:', error.message)
+    }
   }, [])
 
   const loadCategories = async () => {
     try {
-      const response = await api.get('/admin/settings/categories')
+      const response = await api.get(`/admin/settings/categories?_t=${Date.now()}`)
       const data = Array.isArray(response.data) ? response.data : response.data?.categories || []
       setCategories(data)
       setFilteredCategories(data)

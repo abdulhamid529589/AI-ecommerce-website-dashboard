@@ -2,12 +2,16 @@ import React, { useState, useEffect } from 'react'
 import { LoaderCircle, X } from 'lucide-react'
 import api from '../lib/axios'
 import { toast } from 'react-toastify'
+import { useSocket } from '../hooks/useSocket'
+import { useCategorySync } from '../hooks/useRealtimeSync'
 import '../styles/modals.css'
 import { getOperationErrorMessage } from '../utils/errorHandler'
 
 const CreateProductModal = ({ onClose, onSuccess }) => {
   const [loading, setLoading] = useState(false)
   const [categoryOptions, setCategoryOptions] = useState([])
+  const { socket, isConnected } = useSocket('dashboard')
+  const { setupCategorySync } = useCategorySync(setCategoryOptions)
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -23,7 +27,7 @@ const CreateProductModal = ({ onClose, onSuccess }) => {
   useEffect(() => {
     const loadCategories = async () => {
       try {
-        const response = await api.get('/admin/settings/categories')
+        const response = await api.get(`/admin/settings/categories?_t=${Date.now()}`)
         const cats = Array.isArray(response.data) ? response.data : response.data?.categories || []
         const categoryNames = cats.map((cat) => cat.name)
         setCategoryOptions(categoryNames)
@@ -49,7 +53,19 @@ const CreateProductModal = ({ onClose, onSuccess }) => {
       }
     }
     loadCategories()
-  }, [])
+
+    // Set up real-time category sync
+    if (socket && isConnected) {
+      setupCategorySync(socket)
+    }
+  }, [socket, isConnected, setupCategorySync])
+
+  // Update category when categories load (optional - don't force selection)
+  useEffect(() => {
+    if (categoryOptions.length > 0 && !formData.category) {
+      // Keep category empty - it's now optional
+    }
+  }, [categoryOptions])
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files)
@@ -67,7 +83,7 @@ const CreateProductModal = ({ onClose, onSuccess }) => {
     e.preventDefault()
 
     if (!formData.name || !formData.price || !formData.stock) {
-      toast.error('Please fill in all required fields')
+      toast.error('Please fill in all required fields (Name, Price, Stock)')
       return
     }
 
@@ -78,7 +94,10 @@ const CreateProductModal = ({ onClose, onSuccess }) => {
       data.append('name', formData.name)
       data.append('description', formData.description)
       data.append('price', formData.price)
-      data.append('category', formData.category)
+      // Category is optional - only append if selected
+      if (formData.category) {
+        data.append('category', formData.category)
+      }
       data.append('stock', formData.stock)
 
       for (let i = 0; i < formData.images.length; i++) {
@@ -130,13 +149,13 @@ const CreateProductModal = ({ onClose, onSuccess }) => {
           {/* Category & Price */}
           <div className="form-row">
             <div className="form-group">
-              <label className="form-label">Category *</label>
+              <label className="form-label">Category (Optional)</label>
               <select
                 className="form-input"
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                required
               >
+                <option value="">No Category</option>
                 {categoryOptions.map((cat, idx) => (
                   <option key={idx} value={cat}>
                     {cat}

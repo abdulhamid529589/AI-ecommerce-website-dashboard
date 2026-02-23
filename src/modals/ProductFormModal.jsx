@@ -19,7 +19,7 @@ const ProductFormModal = ({ product, categories, onClose, onSave, isDark }) => {
   const validateForm = () => {
     const newErrors = {}
     if (!formData.name?.trim()) newErrors.name = 'Product name is required'
-    if (!formData.category?.trim()) newErrors.category = 'Category is required'
+    // Category is now optional
     if (!formData.price || parseFloat(formData.price) <= 0)
       newErrors.price = 'Valid price is required'
     if (!formData.stock || parseFloat(formData.stock) < 0)
@@ -117,13 +117,12 @@ const ProductFormModal = ({ product, categories, onClose, onSave, isDark }) => {
               <label
                 className={`block text-sm font-bold mb-2 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}
               >
-                Category <span className="text-red-500">*</span>
+                Category <span className="text-gray-400 text-sm font-normal">(Optional)</span>
               </label>
               <select
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                required
                 className={`w-full px-4 py-3 rounded-lg border-2 appearance-none transition-all focus:outline-none ${
                   errors.category
                     ? isDark
@@ -134,7 +133,7 @@ const ProductFormModal = ({ product, categories, onClose, onSave, isDark }) => {
                       : 'border-slate-300 bg-white focus:border-blue-500'
                 } ${isDark ? 'text-white' : 'text-slate-900'}`}
               >
-                <option value="">Select a category</option>
+                <option value="">No Category</option>
                 {categories.map((cat) => (
                   <option key={cat} value={cat}>
                     {cat}

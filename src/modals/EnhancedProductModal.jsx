@@ -56,10 +56,10 @@ const EnhancedProductModal = ({ product, onClose, onSuccess, isNew = true }) => 
     allowBackorders: normalizedProduct?.allowBackorders || false,
     soldIndividually: normalizedProduct?.soldIndividually || false,
 
-    // Categories & Tags
+    // Categories & Tags (optional - can be empty array)
     selectedCategories: normalizedProduct?.category
       ? [normalizedProduct.category]
-      : normalizedProduct?.selectedCategories || [],
+      : normalizedProduct?.selectedCategories || [], // Empty array is OK - category is optional
     selectedTags: Array.isArray(normalizedProduct?.tags) ? normalizedProduct.tags : [],
     brand: normalizedProduct?.brand || '',
 
@@ -102,15 +102,19 @@ const EnhancedProductModal = ({ product, onClose, onSuccess, isNew = true }) => 
 
   const fetchCategoriesAndTags = async () => {
     try {
-      // Fetch categories from settings (managed in CategoryCollectionManager)
-      const categoriesResponse = await api.get('/admin/settings/categories')
+      // Fetch categories from settings (managed in CategoryCollectionManager) with cache-bust
+      const categoriesResponse = await api.get(`/admin/settings/categories?_t=${Date.now()}`)
       const categoriesData = Array.isArray(categoriesResponse.data)
         ? categoriesResponse.data
         : categoriesResponse.data?.categories || []
-      const categoryNames = categoriesData.map((cat) => cat.name)
-      setCategories(
-        categoryNames.length > 0 ? categoryNames : ['Bedding', 'Electronics', 'Fashion'],
-      )
+
+      // Convert category objects to format with id and name
+      const formattedCategories = categoriesData.map((cat, idx) => ({
+        id: cat.id || idx,
+        name: typeof cat === 'string' ? cat : cat.name,
+      }))
+
+      setCategories(formattedCategories.length > 0 ? formattedCategories : [])
 
       // Extract unique tags from products
       const token = localStorage.getItem('accessToken') || localStorage.getItem('token')
@@ -128,8 +132,8 @@ const EnhancedProductModal = ({ product, onClose, onSuccess, isNew = true }) => 
       }
     } catch (error) {
       console.error('Failed to fetch categories/tags:', error)
-      // Set fallback categories
-      setCategories(['Bedding', 'Pillows', 'Blankets', 'Comforters', 'Electronics', 'Fashion'])
+      // Set empty categories on error - optional field
+      setCategories([])
       setTags([])
     }
   }
@@ -216,10 +220,7 @@ const EnhancedProductModal = ({ product, onClose, onSuccess, isNew = true }) => 
       return
     }
 
-    if (!formData.selectedCategories || formData.selectedCategories.length === 0) {
-      toast.error('Please select at least one category')
-      return
-    }
+    // Category is now optional - skip validation
 
     if (!formData.fullDescription) {
       toast.error('Please provide a product description')
@@ -236,7 +237,14 @@ const EnhancedProductModal = ({ product, onClose, onSuccess, isNew = true }) => 
       submitData.append('name', formData.name)
       submitData.append('description', formData.fullDescription)
       submitData.append('price', formData.regularPrice)
-      submitData.append('category', formData.selectedCategories[0])
+      // Category is optional - only append if selected
+      if (formData.selectedCategories && formData.selectedCategories.length > 0) {
+        const categoryId = formData.selectedCategories[0]
+        const selectedCat = categories.find((c) => c.id === categoryId)
+        if (selectedCat?.name) {
+          submitData.append('category', selectedCat.name)
+        }
+      }
       submitData.append('stock', formData.stockQuantity)
 
       // Optional fields - all mapped with correct snake_case names

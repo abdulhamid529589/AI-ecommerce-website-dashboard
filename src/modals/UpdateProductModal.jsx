@@ -2,12 +2,16 @@ import React, { useState, useEffect } from 'react'
 import { LoaderCircle, X } from 'lucide-react'
 import api from '../lib/axios'
 import { toast } from 'react-toastify'
+import { useSocket } from '../hooks/useSocket'
+import { useCategorySync } from '../hooks/useRealtimeSync'
 import '../styles/modals.css'
 import { getOperationErrorMessage } from '../utils/errorHandler'
 
 const UpdateProductModal = ({ product, onClose, onSuccess }) => {
   const [loading, setLoading] = useState(false)
   const [categoryOptions, setCategoryOptions] = useState([])
+  const { socket, isConnected } = useSocket('dashboard')
+  const { setupCategorySync } = useCategorySync(setCategoryOptions)
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -23,7 +27,7 @@ const UpdateProductModal = ({ product, onClose, onSuccess }) => {
   useEffect(() => {
     const loadCategories = async () => {
       try {
-        const response = await api.get('/admin/settings/categories')
+        const response = await api.get(`/admin/settings/categories?_t=${Date.now()}`)
         const cats = Array.isArray(response.data) ? response.data : response.data?.categories || []
         const categoryNames = cats.map((cat) => cat.name)
         setCategoryOptions(categoryNames)
@@ -43,7 +47,12 @@ const UpdateProductModal = ({ product, onClose, onSuccess }) => {
       }
     }
     loadCategories()
-  }, [])
+
+    // Set up real-time category sync
+    if (socket && isConnected) {
+      setupCategorySync(socket)
+    }
+  }, [socket, isConnected, setupCategorySync])
 
   useEffect(() => {
     if (product) {
@@ -51,7 +60,7 @@ const UpdateProductModal = ({ product, onClose, onSuccess }) => {
         name: product.name || '',
         description: product.description || '',
         price: product.price || '',
-        category: product.category || categoryOptions[0] || 'Electronics',
+        category: product.category || '', // Keep existing or empty - category is optional now
         stock: product.stock || '',
         images: [],
       })
@@ -77,7 +86,7 @@ const UpdateProductModal = ({ product, onClose, onSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    if (!formData.name || !formData.price || !formData.stock) {
+    if (!formData.name || !formData.price === undefined || !formData.stock === undefined) {
       toast.error('Please fill in all required fields')
       return
     }
@@ -89,7 +98,10 @@ const UpdateProductModal = ({ product, onClose, onSuccess }) => {
       data.append('name', formData.name)
       data.append('description', formData.description)
       data.append('price', formData.price)
-      data.append('category', formData.category)
+      // Category is optional - only append if selected
+      if (formData.category) {
+        data.append('category', formData.category)
+      }
       data.append('stock', formData.stock)
 
       for (let i = 0; i < formData.images.length; i++) {
@@ -141,13 +153,13 @@ const UpdateProductModal = ({ product, onClose, onSuccess }) => {
           {/* Category & Price */}
           <div className="form-row">
             <div className="form-group">
-              <label className="form-label">Category *</label>
+              <label className="form-label">Category (Optional)</label>
               <select
                 className="form-input"
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                required
               >
+                <option value="">No Category</option>
                 {categoryOptions.map((cat, idx) => (
                   <option key={idx} value={cat}>
                     {cat}

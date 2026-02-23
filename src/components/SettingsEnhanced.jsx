@@ -1914,7 +1914,7 @@ const SettingsEnhanced = () => {
                       try {
                         setSaving(true)
                         const res = await api
-                          .get('/admin/settings/categories')
+                          .get(`/admin/settings/categories?_t=${Date.now()}`)
                           .catch(() => ({ data: [] }))
                         const cats = Array.isArray(res.data) ? res.data : []
                         cats.push({ name: 'New Category', subcategories: [] })
@@ -2394,7 +2394,7 @@ const CategoryManager = () => {
   const fetchCats = async () => {
     setLoadingCats(true)
     try {
-      const res = await api.get('/admin/settings/categories')
+      const res = await api.get(`/admin/settings/categories?_t=${Date.now()}`)
       setLocalCats(Array.isArray(res.data) ? res.data : [])
     } catch (e) {
       console.error(e)
