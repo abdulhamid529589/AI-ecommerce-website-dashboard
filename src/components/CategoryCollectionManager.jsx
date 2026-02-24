@@ -17,6 +17,7 @@ import {
 import api, { API_PREFIX } from '../lib/axios'
 import { useSocket } from '../hooks/useSocket'
 import io from 'socket.io-client'
+import SubcategoryManager from './SubcategoryManager'
 
 export default function CategoryCollectionManager() {
   const [categories, setCategories] = useState([])
@@ -30,6 +31,8 @@ export default function CategoryCollectionManager() {
   const [expandedItem, setExpandedItem] = useState(null)
   const [imageUploadLoading, setImageUploadLoading] = useState(false)
   const [imagePreview, setImagePreview] = useState(null)
+  const [showSubcategoryManager, setShowSubcategoryManager] = useState(false)
+  const [selectedCategoryForSubcategories, setSelectedCategoryForSubcategories] = useState(null)
 
   const [formData, setFormData] = useState({
     name: '',
@@ -77,9 +80,16 @@ export default function CategoryCollectionManager() {
         loadCategories()
       })
 
+      socket.on('subcategories:changed', (data) => {
+        console.log('🔄 [CategoryManager] Subcategory changed:', data)
+        // Reload categories to refresh subcategory lists
+        loadCategories()
+      })
+
       return () => {
         socket.off('categories:updated')
         socket.off('categories:changed')
+        socket.off('subcategories:changed')
         socket.off('connect')
         socket.disconnect()
       }
@@ -474,6 +484,17 @@ export default function CategoryCollectionManager() {
                   </button>
 
                   <button
+                    onClick={() => {
+                      setSelectedCategoryForSubcategories(category)
+                      setShowSubcategoryManager(true)
+                    }}
+                    className="p-2 hover:bg-slate-700 rounded transition text-purple-400 font-semibold"
+                    title="Manage Subcategories"
+                  >
+                    ⊕ Subs
+                  </button>
+
+                  <button
                     onClick={() => handleDelete(category.id)}
                     className="p-2 hover:bg-slate-700 rounded transition text-red-400"
                   >
@@ -483,29 +504,30 @@ export default function CategoryCollectionManager() {
               </div>
 
               {/* Subcategories */}
-              {expandedItem === category.id && category.subcategories.length > 0 && (
-                <div className="bg-slate-700 bg-opacity-50 border-t border-slate-700 p-4 space-y-2">
-                  {category.subcategories.map((sub) => (
-                    <div
-                      key={sub.id}
-                      className="flex items-center justify-between p-2 bg-slate-800 rounded"
-                    >
-                      <div>
-                        <p className="font-semibold ml-4">→ {sub.name}</p>
-                        <p className="text-sm text-slate-400 ml-4">{sub.productCount} products</p>
+              {expandedItem === category.id &&
+                category.subcategories &&
+                category.subcategories.length > 0 && (
+                  <div className="bg-slate-700 bg-opacity-50 border-t border-slate-700 p-4 space-y-2">
+                    {category.subcategories.map((sub) => (
+                      <div
+                        key={sub.id}
+                        className="flex items-center justify-between p-2 bg-slate-800 rounded"
+                      >
+                        <div>
+                          <p className="font-semibold ml-4">
+                            → {sub.icon} {sub.name}
+                          </p>
+                          <p className="text-sm text-slate-400 ml-4">{sub.slug}</p>
+                        </div>
+                        {sub.is_active && (
+                          <span className="text-xs bg-green-600 text-white px-2 py-1 rounded">
+                            Active
+                          </span>
+                        )}
                       </div>
-                      <div className="flex gap-2">
-                        <button className="p-1 text-blue-400 hover:bg-slate-700 rounded transition">
-                          <Edit size={16} />
-                        </button>
-                        <button className="p-1 text-red-400 hover:bg-slate-700 rounded transition">
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+                    ))}
+                  </div>
+                )}
             </div>
           ))}
         </div>
@@ -702,6 +724,20 @@ export default function CategoryCollectionManager() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Subcategory Manager Modal */}
+      {showSubcategoryManager && selectedCategoryForSubcategories && (
+        <SubcategoryManager
+          category={selectedCategoryForSubcategories}
+          onClose={() => {
+            setShowSubcategoryManager(false)
+            setSelectedCategoryForSubcategories(null)
+          }}
+          onUpdate={() => {
+            loadCategories()
+          }}
+        />
       )}
     </div>
   )

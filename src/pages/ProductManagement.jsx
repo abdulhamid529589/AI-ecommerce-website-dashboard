@@ -615,13 +615,13 @@ const ProductManagement = () => {
                       if (totalPages <= 5) {
                         page = i + 1
                       } else {
-                        page = currentPage - 2 + i
-                        if (page < 1) page += totalPages - 4
-                        if (page > totalPages) page -= totalPages - 4
+                        const start = Math.max(1, currentPage - 2)
+                        const end = Math.min(totalPages, start + 4)
+                        page = start + Math.min(i, end - start)
                       }
                       return (
                         <button
-                          key={page}
+                          key={`page-${page}-${i}`}
                           onClick={() => setCurrentPage(page)}
                           className={`px-3 py-2 rounded-lg text-sm font-bold transition-all ${currentPage === page ? 'bg-blue-600 text-white' : isDark ? 'bg-slate-700 text-slate-300 hover:bg-slate-600' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}
                         >
