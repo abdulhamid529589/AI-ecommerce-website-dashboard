@@ -5,9 +5,11 @@ import { toast } from 'react-toastify'
 import api from '../lib/axios'
 import OrderDetailModal from '../modals/OrderDetailModal'
 import PremiumTable from '../components/Premium/PremiumTable'
+import { useSocket } from '../hooks/useSocket'
 
 const OrderManagement = () => {
   const isDark = useSelector((state) => state.theme?.isDark) || false
+  const { socket, isConnected } = useSocket('dashboard')
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
@@ -21,6 +23,20 @@ const OrderManagement = () => {
   useEffect(() => {
     fetchOrders()
   }, [filterStatus, sortBy])
+
+  // Socket.IO Listener for Real-Time Order Updates
+  useEffect(() => {
+    if (!socket) return
+
+    socket.on('orders:changed', (data) => {
+      console.log('📱 [Dashboard] Order update received:', data.action)
+      fetchOrders()
+    })
+
+    return () => {
+      socket.off('orders:changed')
+    }
+  }, [socket])
 
   const fetchOrders = async () => {
     try {

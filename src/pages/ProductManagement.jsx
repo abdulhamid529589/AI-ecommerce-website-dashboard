@@ -26,9 +26,11 @@ import { toast } from 'react-toastify'
 import api from '../lib/axios'
 import EnhancedProductModal from '../modals/EnhancedProductModal'
 import { getImageSrc, handleImageError } from '../utils/imageUtils'
+import { useSocket } from '../hooks/useSocket'
 
 const ProductManagement = () => {
   const isDark = useSelector((state) => state.theme?.isDark) || false
+  const { socket, isConnected } = useSocket('dashboard')
 
   // State Management
   const [products, setProducts] = useState([])
@@ -83,6 +85,20 @@ const ProductManagement = () => {
     fetchProducts()
     fetchCategories()
   }, [fetchProducts, fetchCategories])
+
+  // Socket.IO Listener for Real-Time Product Updates
+  useEffect(() => {
+    if (!socket) return
+
+    socket.on('products:changed', (data) => {
+      console.log('📱 [Dashboard] Product update received:', data.action)
+      fetchProducts()
+    })
+
+    return () => {
+      socket.off('products:changed')
+    }
+  }, [socket, fetchProducts])
 
   // Advanced Filtering & Sorting
   const filteredAndSortedProducts = useMemo(() => {

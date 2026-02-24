@@ -15,6 +15,7 @@ import {
   Tag,
   Layers,
   Activity,
+  ShoppingCart,
 } from 'lucide-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Navigate, useNavigate, useLocation } from 'react-router-dom'
@@ -58,6 +59,8 @@ const SideBar = () => {
     { icon: Activity, label: 'Performance', path: '/performance' },
     // Content & Homepage
     { icon: Home, label: 'Homepage', path: '/content/homepage' },
+    // Ordering System Settings - NEW
+    { icon: ShoppingCart, label: 'Ordering System', path: '/admin/ordering-system' },
     // Users & Settings
     { icon: Users, label: 'Users', path: '/users' },
     { icon: Settings, label: 'Settings', path: '/settings' },

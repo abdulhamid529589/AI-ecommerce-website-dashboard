@@ -11,6 +11,7 @@ import {
   Settings,
 } from 'lucide-react'
 import api from '../lib/axios'
+import { useSocket } from '../hooks/useSocket'
 import './SettingsManagement.css'
 
 /**
@@ -18,6 +19,7 @@ import './SettingsManagement.css'
  * Manages hero slides, featured products, shop info, and system settings
  */
 const SettingsManagement = () => {
+  const { socket, isConnected } = useSocket('dashboard')
   const [activeTab, setActiveTab] = useState('heroSlides')
   const [heroSlides, setHeroSlides] = useState([])
   const [shopInfo, setShopInfo] = useState({})
@@ -30,6 +32,38 @@ const SettingsManagement = () => {
   useEffect(() => {
     loadSettings()
   }, [])
+
+  // Socket.IO Listener for Real-Time Settings Updates
+  useEffect(() => {
+    if (!socket) return
+
+    socket.on('categories:updated', () => {
+      console.log('📱 [Dashboard] Categories update received')
+      loadSettings()
+    })
+
+    socket.on('subcategories:created', () => {
+      console.log('📱 [Dashboard] Subcategory created')
+      loadSettings()
+    })
+
+    socket.on('subcategories:updated', () => {
+      console.log('📱 [Dashboard] Subcategory updated')
+      loadSettings()
+    })
+
+    socket.on('subcategories:deleted', () => {
+      console.log('📱 [Dashboard] Subcategory deleted')
+      loadSettings()
+    })
+
+    return () => {
+      socket.off('categories:updated')
+      socket.off('subcategories:created')
+      socket.off('subcategories:updated')
+      socket.off('subcategories:deleted')
+    }
+  }, [socket])
 
   const loadSettings = async () => {
     setLoading(true)

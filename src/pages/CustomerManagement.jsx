@@ -5,9 +5,11 @@ import { toast } from 'react-toastify'
 import api from '../lib/axios'
 import CustomerDetailModal from '../modals/CustomerDetailModal'
 import PremiumTable from '../components/Premium/PremiumTable'
+import { useSocket } from '../hooks/useSocket'
 
 const CustomerManagement = () => {
   const isDark = useSelector((state) => state.theme?.isDark) || false
+  const { socket, isConnected } = useSocket('dashboard')
   const [customers, setCustomers] = useState([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
@@ -22,6 +24,20 @@ const CustomerManagement = () => {
   useEffect(() => {
     fetchCustomers()
   }, [filterSegment, currentPage])
+
+  // Socket.IO Listener for Real-Time Customer Updates
+  useEffect(() => {
+    if (!socket) return
+
+    socket.on('customers:changed', (data) => {
+      console.log('📱 [Dashboard] Customer update received:', data.action)
+      fetchCustomers()
+    })
+
+    return () => {
+      socket.off('customers:changed')
+    }
+  }, [socket])
 
   const fetchCustomers = async () => {
     try {

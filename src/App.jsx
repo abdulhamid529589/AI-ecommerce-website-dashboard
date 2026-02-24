@@ -21,6 +21,7 @@ import HomepageContentBuilder from './components/HomepageContentBuilder'
 // Phase 2 - Review & Settings Management
 import ReviewManagement from './pages/ReviewManagement'
 import SettingsManagement from './pages/SettingsManagement'
+import OrderingSystemSettings from './pages/OrderingSystemSettings'
 // Phase 3 - Performance Optimization
 import PerformanceDashboard from './pages/PerformanceDashboard'
 import { loginSuccess, logout } from './store/slices/authSlice'
@@ -276,6 +277,14 @@ function App() {
           element={
             <ProtectedLayout>
               <SettingsManagement />
+            </ProtectedLayout>
+          }
+        />
+        <Route
+          path="/admin/ordering-system"
+          element={
+            <ProtectedLayout>
+              <OrderingSystemSettings />
             </ProtectedLayout>
           }
         />

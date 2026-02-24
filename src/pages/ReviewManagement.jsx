@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { Search, MoreVertical, CheckCircle, XCircle, AlertCircle, Trash2 } from 'lucide-react'
 import api from '../lib/axios'
+import { useSocket } from '../hooks/useSocket'
 import './ReviewManagement.css'
 
 const ReviewManagement = () => {
+  const { socket, isConnected } = useSocket('dashboard')
   const [reviews, setReviews] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -15,6 +17,20 @@ const ReviewManagement = () => {
   useEffect(() => {
     fetchReviews()
   }, [])
+
+  // Socket.IO Listener for Real-Time Review Updates
+  useEffect(() => {
+    if (!socket) return
+
+    socket.on('reviews:changed', (data) => {
+      console.log('📱 [Dashboard] Review update received:', data.action)
+      fetchReviews()
+    })
+
+    return () => {
+      socket.off('reviews:changed')
+    }
+  }, [socket])
 
   const fetchReviews = async () => {
     setLoading(true)

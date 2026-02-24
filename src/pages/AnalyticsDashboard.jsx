@@ -18,10 +18,12 @@ import CustomerAnalytics from './components/CustomerAnalytics'
 import OrderAnalytics from './components/OrderAnalytics'
 import InventoryHealth from './components/InventoryHealth'
 import ReviewAnalytics from './components/ReviewAnalytics'
+import { useSocket } from '../hooks/useSocket'
 import './AnalyticsDashboard.css'
 
 const AnalyticsDashboard = () => {
   const dispatch = useDispatch()
+  const { socket, isConnected } = useSocket('dashboard')
   const { loading, error, dashboardSummary } = useSelector((state) => state.analytics)
   const [activeTab, setActiveTab] = useState('overview')
   const [dateRange, setDateRange] = useState({
@@ -33,6 +35,20 @@ const AnalyticsDashboard = () => {
     // Load dashboard summary on component mount
     dispatch(fetchDashboardSummary(dateRange))
   }, [dispatch, dateRange])
+
+  // Socket.IO Listener for Real-Time Analytics Updates
+  useEffect(() => {
+    if (!socket) return
+
+    socket.on('analytics:updated', (data) => {
+      console.log('📱 [Dashboard] Analytics update received')
+      dispatch(fetchDashboardSummary(dateRange))
+    })
+
+    return () => {
+      socket.off('analytics:updated')
+    }
+  }, [socket, dispatch, dateRange])
 
   const handleDateChange = (start, end) => {
     setDateRange({
