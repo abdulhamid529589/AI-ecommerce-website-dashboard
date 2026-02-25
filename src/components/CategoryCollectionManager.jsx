@@ -60,6 +60,9 @@ export default function CategoryCollectionManager() {
         reconnectionDelay: 1000,
         reconnectionDelayMax: 5000,
         reconnectionAttempts: 5,
+        withCredentials: true,
+        forceNew: false,
+        multiplex: true,
       })
 
       socket.on('connect', () => {

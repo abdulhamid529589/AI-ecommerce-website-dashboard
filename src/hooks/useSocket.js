@@ -34,38 +34,70 @@ export const useSocket = (clientType = 'dashboard') => {
 
   useEffect(() => {
     // Determine socket server URL
-    const socketUrl = import.meta.env.VITE_SOCKET_URL || 'http://localhost:8000'
+    const socketUrl = import.meta.env.VITE_SOCKET_URL || `${window.location.origin}`
 
-    console.log(`[useSocket-Dashboard] Connecting to ${socketUrl}`)
-
-    // Create socket connection
-    const socket = io(socketUrl, {
-      reconnection: true,
-      reconnectionDelay: 1000,
-      reconnectionDelayMax: 5000,
-      reconnectionAttempts: 5,
-      transports: ['websocket', 'polling'],
+    console.log(`[useSocket-Dashboard] Connecting to Socket.io`, {
+      url: socketUrl,
+      envVar: import.meta.env.VITE_SOCKET_URL,
+      clientType,
     })
 
-    // Connection events
-    socket.on('connect', () => {
-      console.log(`[useSocket] ✅ Dashboard connected to Socket.IO server`)
-      isConnectedRef.current = true
+    // Create socket connection with error handling
+    let socket
+    try {
+      socket = io(socketUrl, {
+        reconnection: true,
+        reconnectionDelay: 1000,
+        reconnectionDelayMax: 5000,
+        reconnectionAttempts: 5,
+        transports: ['websocket', 'polling'],
+        withCredentials: true,
+        forceNew: false,
+        timeout: 10000,
+      })
 
-      // Identify as dashboard
-      socket.emit('client-type', clientType)
-    })
+      // Connection events
+      socket.on('connect', () => {
+        console.log(`[useSocket] ✅ Dashboard connected to Socket.IO`, {
+          socketId: socket.id,
+          transport: socket.io.engine.transport.name,
+        })
+        isConnectedRef.current = true
 
-    socket.on('connection-success', (data) => {
-      console.log(`[useSocket] 🎉 Dashboard connection established:`, data)
-    })
+        // Identify as dashboard
+        socket.emit('client-type', clientType)
+      })
 
-    socket.on('disconnect', () => {
-      console.log(`[useSocket] ❌ Dashboard disconnected from Socket.IO server`)
-      isConnectedRef.current = false
-    })
+      socket.on('connection-success', (data) => {
+        console.log(`[useSocket] 🎉 Dashboard connection established:`, data)
+      })
 
-    socket.on('error', (error) => {
+      socket.on('disconnect', (reason) => {
+        console.warn(`[useSocket] ❌ Dashboard disconnected from Socket.IO`, {
+          reason,
+        })
+        isConnectedRef.current = false
+      })
+
+      socket.on('connect_error', (error) => {
+        console.error(`[useSocket] ⚠️ Connection error:`, {
+          message: error?.message,
+          type: error?.type,
+          code: error?.code,
+        })
+      })
+
+      socket.on('error', (error) => {
+        console.error(`[useSocket] ❌ Socket error:`, error)
+      })
+
+      socket.on('reconnect_attempt', () => {
+        console.log(`[useSocket] 🔄 Attempting to reconnect`)
+      })
+
+      socket.on('reconnect', () => {
+        console.log(`[useSocket] ✅ Successfully reconnected`)
+      })
       console.error(`[useSocket] ⚠️ Socket error:`, error)
     })
 
