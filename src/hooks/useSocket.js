@@ -98,8 +98,9 @@ export const useSocket = (clientType = 'dashboard') => {
       socket.on('reconnect', () => {
         console.log(`[useSocket] ✅ Successfully reconnected`)
       })
-      console.error(`[useSocket] ⚠️ Socket error:`, error)
-    })
+    } catch (connectionError) {
+      console.error(`[useSocket] ❌ Fatal error creating socket connection:`, connectionError)
+    }
 
     socketRef.current = socket
 
