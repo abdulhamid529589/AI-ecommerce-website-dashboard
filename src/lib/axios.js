@@ -14,7 +14,7 @@ const api = axios.create({
 })
 
 // 🔒 CSRF Token handling
-let csrfToken = null
+let csrfToken = localStorage.getItem('csrfToken') || null
 let csrfRefreshing = false
 
 /**
@@ -26,6 +26,8 @@ export const initializeCsrfToken = async () => {
     console.log('🔄 Fetching Dashboard CSRF token...')
     const response = await api.get('/csrf-token')
     csrfToken = response.data.csrfToken
+    // Persist in localStorage for availability across requests
+    localStorage.setItem('csrfToken', csrfToken)
     // Add to default headers for all requests
     api.defaults.headers.common['X-CSRF-Token'] = csrfToken
     console.log('✅ Dashboard CSRF token initialized:', csrfToken ? 'SUCCESS' : 'FAILED')
@@ -42,7 +44,7 @@ export const initializeCsrfToken = async () => {
 export const refreshCsrfToken = async () => {
   if (csrfRefreshing) {
     console.log('⏳ Dashboard CSRF token already refreshing...')
-    return csrfToken
+    return csrfToken || localStorage.getItem('csrfToken')
   }
 
   csrfRefreshing = true
@@ -52,7 +54,7 @@ export const refreshCsrfToken = async () => {
   } finally {
     csrfRefreshing = false
   }
-  return csrfToken
+  return csrfToken || localStorage.getItem('csrfToken')
 }
 
 let isRefreshing = false
@@ -87,17 +89,21 @@ api.interceptors.request.use((config) => {
   }
 
   // Ensure CSRF token is in headers AND body for state-changing methods
+  // BUT: Don't send CSRF for admin routes - they use JWT auth and exempt CSRF
   const isStateChanging = ['POST', 'PUT', 'DELETE'].includes(config.method?.toUpperCase())
-  if (isStateChanging && csrfToken) {
+  const isAdminRoute = config.url?.includes('/admin/')
+  const currentCsrfToken = csrfToken || localStorage.getItem('csrfToken')
+
+  if (isStateChanging && currentCsrfToken && !isAdminRoute) {
     config.headers = config.headers || {}
-    config.headers['X-CSRF-Token'] = csrfToken
+    config.headers['X-CSRF-Token'] = currentCsrfToken
 
     // Also send in body as _csrf for fallback (but NOT for arrays)
     // For FormData, append as field; for objects, add as property
     if (config.data instanceof FormData) {
-      config.data.append('_csrf', csrfToken)
+      config.data.append('_csrf', currentCsrfToken)
     } else if (config.data && typeof config.data === 'object' && !Array.isArray(config.data)) {
-      config.data._csrf = csrfToken
+      config.data._csrf = currentCsrfToken
     }
   }
 

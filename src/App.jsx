@@ -22,6 +22,8 @@ import HomepageContentBuilder from './components/HomepageContentBuilder'
 import ReviewManagement from './pages/ReviewManagement'
 import SettingsManagement from './pages/SettingsManagement'
 import OrderingSystemSettings from './pages/OrderingSystemSettings'
+// Phase 5 - Chat Management
+import ChatManagement from './pages/ChatManagement'
 // Phase 3 - Performance Optimization
 import PerformanceDashboard from './pages/PerformanceDashboard'
 import { loginSuccess, logout } from './store/slices/authSlice'
@@ -285,6 +287,14 @@ function App() {
           element={
             <ProtectedLayout>
               <OrderingSystemSettings />
+            </ProtectedLayout>
+          }
+        />
+        <Route
+          path="/admin/chats"
+          element={
+            <ProtectedLayout>
+              <ChatManagement />
             </ProtectedLayout>
           }
         />

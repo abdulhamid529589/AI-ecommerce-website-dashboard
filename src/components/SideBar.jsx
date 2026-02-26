@@ -16,6 +16,7 @@ import {
   Layers,
   Activity,
   ShoppingCart,
+  MessageSquare,
 } from 'lucide-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Navigate, useNavigate, useLocation } from 'react-router-dom'
@@ -61,6 +62,8 @@ const SideBar = () => {
     { icon: Home, label: 'Homepage', path: '/content/homepage' },
     // Ordering System Settings - NEW
     { icon: ShoppingCart, label: 'Ordering System', path: '/admin/ordering-system' },
+    // Customer Chat Management
+    { icon: MessageSquare, label: 'Customer Chats', path: '/admin/chats' },
     // Users & Settings
     { icon: Users, label: 'Users', path: '/users' },
     { icon: Settings, label: 'Settings', path: '/settings' },
