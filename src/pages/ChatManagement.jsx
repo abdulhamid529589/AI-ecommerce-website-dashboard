@@ -64,9 +64,10 @@ const ChatManagement = () => {
     setLoading(true)
     try {
       const response = await api.get('/chat/admin/conversations')
+      console.log('✅ Conversations loaded:', response.data)
       setConversations(response.data.conversations || [])
     } catch (error) {
-      console.error('Failed to load conversations:', error)
+      console.error('❌ Failed to load conversations:', error.response?.data || error.message)
     } finally {
       setLoading(false)
     }
@@ -78,9 +79,10 @@ const ChatManagement = () => {
     setMessages([])
     try {
       const response = await api.get(`/chat/${conversation.id}/messages`)
+      console.log('✅ Messages loaded for conversation:', conversation.id, response.data)
       setMessages(response.data.messages || [])
     } catch (error) {
-      console.error('Failed to load messages:', error)
+      console.error('❌ Failed to load messages:', error.response?.data || error.message)
     }
   }
 
@@ -134,7 +136,18 @@ const ChatManagement = () => {
           {loading ? (
             <div className="loading">Loading conversations...</div>
           ) : conversations.length === 0 ? (
-            <div className="empty-state">No conversations yet</div>
+            <div className="empty-state">
+              <MessageSquare size={32} />
+              <p>
+                <strong>No conversations yet</strong>
+              </p>
+              <p style={{ fontSize: '12px', color: '#888', marginTop: '8px' }}>
+                Customers will appear here once they start chatting.
+              </p>
+              <p style={{ fontSize: '12px', color: '#888' }}>
+                Make sure the chat button is visible on your website.
+              </p>
+            </div>
           ) : (
             <div className="conversations-list">
               {conversations.map((conv) => (
