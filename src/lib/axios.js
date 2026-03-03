@@ -91,7 +91,7 @@ api.interceptors.request.use((config) => {
   // Ensure CSRF token is in headers AND body for state-changing methods
   // BUT: Don't send CSRF for admin routes - they use JWT auth and exempt CSRF
   const isStateChanging = ['POST', 'PUT', 'DELETE'].includes(config.method?.toUpperCase())
-  const isAdminRoute = config.url?.includes('/admin/')
+  const isAdminRoute = config.url?.includes('/admin/') || config.url?.includes('/chat/')
   const currentCsrfToken = csrfToken || localStorage.getItem('csrfToken')
 
   if (isStateChanging && currentCsrfToken && !isAdminRoute) {

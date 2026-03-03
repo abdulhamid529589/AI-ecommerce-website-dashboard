@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { MessageSquare, Send, X, Clock, User } from 'lucide-react'
+import { MessageSquare, Send, X, Clock, User, Trash2, Settings } from 'lucide-react'
 import api from '../lib/axios'
 import io from 'socket.io-client'
+import { toast } from 'react-toastify'
 import '../styles/ChatManagement.css'
 
 /**
@@ -15,13 +16,27 @@ const ChatManagement = () => {
   const [replyMessage, setReplyMessage] = useState('')
   const [loading, setLoading] = useState(false)
   const [sending, setSending] = useState(false)
+  const [whatsappNumber, setWhatsappNumber] = useState('')
+  const [showSettings, setShowSettings] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const messagesEndRef = useRef(null)
   const socketRef = useRef(null)
 
   // Load all conversations
   useEffect(() => {
     loadConversations()
+    loadWhatsappNumber()
   }, [])
+
+  // Load WhatsApp number from settings
+  const loadWhatsappNumber = async () => {
+    try {
+      const response = await api.get('/product/settings/chat')
+      setWhatsappNumber(response.data.whatsappNumber || '')
+    } catch (error) {
+      console.warn('Failed to load WhatsApp number:', error.message)
+    }
+  }
 
   // Initialize Socket.io for real-time updates
   useEffect(() => {
@@ -116,8 +131,50 @@ const ChatManagement = () => {
       await api.put(`/chat/${conversationId}/close`)
       setSelectedConversation(null)
       await loadConversations()
+      toast.success('Conversation closed')
     } catch (error) {
       console.error('Failed to close conversation:', error)
+      toast.error('Failed to close conversation')
+    }
+  }
+
+  // Delete conversation
+  const handleDeleteConversation = async (conversationId) => {
+    if (
+      !window.confirm(
+        'Are you sure you want to delete this conversation? This action cannot be undone.',
+      )
+    )
+      return
+
+    setDeleting(true)
+    try {
+      const response = await api.delete(`/chat/${conversationId}`)
+      console.log('✅ Delete response:', response.data)
+
+      // Remove from UI immediately
+      setConversations((prev) => prev.filter((conv) => conv.id !== conversationId))
+      setSelectedConversation(null)
+
+      toast.success('Conversation deleted successfully')
+    } catch (error) {
+      console.error('Failed to delete conversation:', error)
+      toast.error('Failed to delete conversation')
+    } finally {
+      setDeleting(false)
+    }
+  }
+
+  // Update WhatsApp number
+  const handleUpdateWhatsapp = async (e) => {
+    e.preventDefault()
+    try {
+      await api.put('/product/settings/chat', { whatsappNumber })
+      toast.success('WhatsApp number updated successfully')
+      setShowSettings(false)
+    } catch (error) {
+      console.error('Failed to update WhatsApp number:', error)
+      toast.error('Failed to update WhatsApp number')
     }
   }
 
@@ -126,7 +183,50 @@ const ChatManagement = () => {
       <div className="chat-management-header">
         <MessageSquare size={28} />
         <h1>Customer Chat Management</h1>
+        <button
+          className="settings-btn"
+          onClick={() => setShowSettings(!showSettings)}
+          title="Chat Settings"
+        >
+          <Settings size={20} />
+        </button>
       </div>
+
+      {/* WhatsApp Settings Panel */}
+      {showSettings && (
+        <div className="settings-panel">
+          <div className="settings-content">
+            <h3>Chat Settings</h3>
+            <form onSubmit={handleUpdateWhatsapp}>
+              <div className="form-group">
+                <label>WhatsApp Number for Auto-Reply</label>
+                <input
+                  type="text"
+                  placeholder="+1 234 567 8900"
+                  value={whatsappNumber}
+                  onChange={(e) => setWhatsappNumber(e.target.value)}
+                />
+                <p className="help-text">
+                  This number will be shown in the auto-reply message when customers send their
+                  first message.
+                </p>
+              </div>
+              <div className="form-actions">
+                <button type="submit" className="btn-primary">
+                  Save
+                </button>
+                <button
+                  type="button"
+                  className="btn-secondary"
+                  onClick={() => setShowSettings(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       <div className="chat-container">
         {/* Conversations List */}
@@ -204,6 +304,15 @@ const ChatManagement = () => {
                       Close
                     </button>
                   )}
+                  <button
+                    className="delete-btn"
+                    onClick={() => handleDeleteConversation(selectedConversation.id)}
+                    disabled={deleting}
+                    title="Delete this conversation"
+                  >
+                    <Trash2 size={18} />
+                    {deleting ? 'Deleting...' : 'Delete'}
+                  </button>
                 </div>
               </div>
 
