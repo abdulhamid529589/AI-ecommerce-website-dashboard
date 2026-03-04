@@ -136,7 +136,7 @@
 }
 
 .stat-card {
-  background: white;
+  background: #1f2937;
   border: 1px solid #e5e7eb;
   border-radius: 0.75rem;
   padding: 1rem;
@@ -233,7 +233,7 @@
    ============================================ */
 
 .filters-section {
-  background: white;
+  background: #1f2937;
   border: 1px solid #e5e7eb;
   border-radius: 0.75rem;
   padding: 1rem;
@@ -420,7 +420,7 @@
    ============================================ */
 
 .table-section {
-  background: white;
+  background: #1f2937;
   border: 1px solid #e5e7eb;
   border-radius: 0.75rem;
   overflow: hidden;
@@ -882,7 +882,7 @@
   font-size: 0.75rem;
   font-weight: 500;
   cursor: pointer;
-  background: white;
+  background: #1f2937;
   color: #111827;
   transition: all 0.3s ease;
 }

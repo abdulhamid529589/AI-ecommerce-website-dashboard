@@ -81,7 +81,7 @@
   font-size: 1rem;
   font-family: inherit;
   color: #1f2937;
-  background: white;
+  background: #1f2937;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   outline: none;
 }
@@ -285,7 +285,7 @@
   height: 20px;
   border: 1.5px solid #e5e7eb;
   border-radius: 0.5rem;
-  background: white;
+  background: #1f2937;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   flex-shrink: 0;
 }
@@ -365,7 +365,7 @@
   height: 20px;
   border: 1.5px solid #e5e7eb;
   border-radius: 50%;
-  background: white;
+  background: #1f2937;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   flex-shrink: 0;
 }
@@ -381,7 +381,7 @@
   position: absolute;
   width: 6px;
   height: 6px;
-  background: white;
+  background: #1f2937;
   border-radius: 50%;
   animation: radioDotScale 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }

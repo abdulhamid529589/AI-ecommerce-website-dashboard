@@ -22,7 +22,7 @@
 }
 
 .product-modal-container {
-  background: white;
+  background: #1f2937;
   border-radius: 16px;
   width: 100%;
   max-width: 900px;
@@ -68,7 +68,7 @@
   top: 1.5rem;
   right: 1.5rem;
   z-index: 10;
-  background: white;
+  background: #1f2937;
   border: none;
   width: 40px;
   height: 40px;
@@ -148,7 +148,7 @@
 }
 
 .product-modal-nav:hover {
-  background: white;
+  background: #1f2937;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
@@ -186,7 +186,7 @@
   border-radius: 8px;
   overflow: hidden;
   cursor: pointer;
-  background: white;
+  background: #1f2937;
   transition: all 0.2s ease;
 }
 
@@ -350,7 +350,7 @@
 
 .info-content code {
   flex: 1;
-  background: white;
+  background: #1f2937;
   padding: 0.5rem 0.75rem;
   border-radius: 4px;
   font-size: 0.85rem;
@@ -369,7 +369,7 @@
 }
 
 .copy-btn {
-  background: white;
+  background: #1f2937;
   border: 1px solid #e2e8f0;
   width: 36px;
   height: 36px;
@@ -504,7 +504,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: white;
+  background: #1f2937;
   padding: 0.5rem 0.75rem;
   border-radius: 4px;
   border: 1px solid #e2e8f0;

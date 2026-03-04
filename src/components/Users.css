@@ -136,7 +136,7 @@
 }
 
 .stat-card {
-  background: white;
+  background: #1f2937;
   border: 1px solid #e5e7eb;
   border-radius: 0.75rem;
   padding: 1rem;
@@ -233,7 +233,7 @@
    ============================================ */
 
 .filters-section {
-  background: white;
+  background: #1f2937;
   border: 1px solid #e5e7eb;
   border-radius: 0.75rem;
   padding: 1rem;
@@ -468,7 +468,7 @@
    ============================================ */
 
 .user-card {
-  background: white;
+  background: #1f2937;
   border: 1px solid #e5e7eb;
   border-radius: 0.75rem;
   overflow: hidden;
@@ -802,7 +802,7 @@
 }
 
 .edit-btn {
-  background: white;
+  background: #1f2937;
   border-color: #3b82f6;
   color: #3b82f6;
 }
@@ -826,7 +826,7 @@
 }
 
 .delete-btn {
-  background: white;
+  background: #1f2937;
   border-color: #ef4444;
   color: #ef4444;
 }

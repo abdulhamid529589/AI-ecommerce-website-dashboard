@@ -24,7 +24,7 @@
   display: flex;
   gap: 1rem;
   border-bottom: 1px solid #e5e7eb;
-  background: white;
+  background: #1f2937;
   border-radius: 0.5rem;
   padding: 0.5rem;
   flex-wrap: wrap;
@@ -81,7 +81,7 @@
 .settings-content input,
 .settings-content textarea,
 .settings-content select {
-  background-color: white;
+  background-color: #1f2937;
   color: #1f2937;
 }
 

@@ -57,7 +57,7 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem 1rem;
-  background: white;
+  background: #1f2937;
   border-radius: 1rem;
   border: 1.5px solid #e5e7eb;
   box-shadow: 0 2px 8px rgba(59, 130, 246, 0.05);
@@ -93,7 +93,7 @@
 .table-container {
   overflow: hidden;
   border-radius: 1rem;
-  background: white;
+  background: #1f2937;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.1s both;
 }
@@ -300,7 +300,7 @@
   height: 36px;
   border: 1px solid #e5e7eb;
   border-radius: 0.5rem;
-  background: white;
+  background: #1f2937;
   color: #374151;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -330,7 +330,7 @@
   height: 36px;
   border: 1px solid #e5e7eb;
   border-radius: 0.5rem;
-  background: white;
+  background: #1f2937;
   color: #374151;
   font-size: 0.875rem;
   font-weight: 500;

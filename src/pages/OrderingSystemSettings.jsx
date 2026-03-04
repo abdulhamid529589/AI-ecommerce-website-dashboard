@@ -14,7 +14,6 @@ import { toast } from 'react-toastify'
 
 const OrderingSystemSettings = () => {
   const [activeTab, setActiveTab] = useState('shipping')
-  const [globalSettings, setGlobalSettings] = useState({})
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
 
@@ -25,16 +24,16 @@ const OrderingSystemSettings = () => {
     standardShippingCost: 100,
     expressShippingCost: 200,
     shippingZones: [
-      { id: 1, name: 'Dhaka', cost: 50, deliveryDays: '1-2 days' },
-      { id: 2, name: 'Other Cities', cost: 150, deliveryDays: '3-5 days' },
+      { id: 1, name: 'Chattogram', cost: 60, deliveryDays: '2-3 days' },
+      { id: 2, name: 'All Other Districts', cost: 100, deliveryDays: '3-5 days' },
     ],
   })
 
   // Pricing Settings
   const [pricing, setPricing] = useState({
     currency: 'BDT',
-    taxRate: 15,
-    taxMode: 'inclusive',
+    taxRate: 0,
+    taxMode: 'exclusive',
   })
 
   // Inventory Settings
@@ -83,18 +82,52 @@ const OrderingSystemSettings = () => {
   const loadSettings = async () => {
     setLoading(true)
     try {
-      const response = await api.get('/content/global')
-      const data = response.data?.data || {}
+      // Fetch shipping settings
+      try {
+        const shippingRes = await api.get('/admin/settings/shipping')
+        const shippingData = shippingRes.data?.data || shippingRes.data || {}
+        console.log('✅ Shipping settings loaded:', shippingData)
 
-      setGlobalSettings(data)
+        // Merge with defaults to ensure all fields exist
+        if (shippingData.shipping) {
+          setShipping((prev) => ({ ...prev, ...shippingData.shipping }))
+        }
+        if (shippingData.pricing) {
+          setPricing((prev) => ({ ...prev, ...shippingData.pricing }))
+        }
+        if (shippingData.inventory) {
+          setInventory((prev) => ({ ...prev, ...shippingData.inventory }))
+        }
+        if (shippingData.paymentMethods) {
+          setPaymentMethods(shippingData.paymentMethods)
+        }
+        if (shippingData.returns) {
+          setReturns((prev) => ({ ...prev, ...shippingData.returns }))
+        }
+      } catch (err) {
+        console.warn('⚠️ Failed to load shipping settings, using defaults:', err.message)
+        // Use default mock data if API fails
+      }
 
-      // Load each section with defaults
-      if (data.shipping) setShipping(data.shipping)
-      if (data.pricing) setPricing(data.pricing)
-      if (data.inventory) setInventory(data.inventory)
-      if (data.paymentMethods) setPaymentMethods(data.paymentMethods)
-      if (data.returns) setReturns(data.returns)
-      if (data.promotions) setPromotions(data.promotions)
+      // Fetch promotions (separate endpoint)
+      try {
+        const promoRes = await api.get('/admin/promotions')
+        if (promoRes.data?.promotions && Array.isArray(promoRes.data.promotions)) {
+          setPromotions(
+            promoRes.data.promotions.map((promo) => ({
+              id: promo.id,
+              name: promo.code || promo.name || 'Promotion',
+              type: promo.type === 'percentage' ? 'percentage' : 'fixed',
+              value: parseFloat(promo.value) || 0,
+              startDate: promo.created_at?.split('T')[0] || '',
+              endDate: promo.expiry_date?.split('T')[0] || '',
+              enabled: promo.is_active || false,
+            })),
+          )
+        }
+      } catch (err) {
+        console.warn('⚠️ Failed to load promotions:', err.message)
+      }
     } catch (error) {
       console.error('Failed to load settings:', error)
       toast.error('Failed to load settings')
@@ -106,22 +139,57 @@ const OrderingSystemSettings = () => {
   const saveSettings = async () => {
     setSaving(true)
     try {
-      const updatedSettings = {
-        ...globalSettings,
+      // Save shipping settings
+      const shippingSettings = {
         shipping,
         pricing,
         inventory,
         paymentMethods,
         returns,
-        promotions,
       }
 
-      await api.put('/content/global', updatedSettings)
-      toast.success('Settings saved successfully!')
-      setGlobalSettings(updatedSettings)
+      console.log('💾 Saving ordering system settings:', shippingSettings)
+
+      await api.post('/admin/settings/shipping', shippingSettings)
+      toast.success('✅ Shipping & ordering settings saved successfully!')
+
+      // Save promotions separately
+      for (const promo of promotions) {
+        if (promo.id && typeof promo.id === 'number' && promo.id > 999999) {
+          // New promotion (client-side ID)
+          try {
+            await api.post('/admin/promotions', {
+              code: promo.name || 'PROMO',
+              type: promo.type,
+              value: parseFloat(promo.value) || 0,
+              expiryDate: promo.endDate,
+              description: promo.name,
+              isActive: promo.enabled,
+            })
+          } catch (err) {
+            console.warn('Failed to create promotion:', err.message)
+          }
+        } else if (promo.id) {
+          // Existing promotion
+          try {
+            await api.put(`/admin/promotions/${promo.id}`, {
+              code: promo.name || 'PROMO',
+              type: promo.type,
+              value: parseFloat(promo.value) || 0,
+              expiryDate: promo.endDate,
+              description: promo.name,
+              isActive: promo.enabled,
+            })
+          } catch (err) {
+            console.warn('Failed to update promotion:', err.message)
+          }
+        }
+      }
+
+      toast.success('✅ All settings saved successfully!')
     } catch (error) {
       console.error('Failed to save settings:', error)
-      toast.error('Failed to save settings')
+      toast.error('Failed to save settings: ' + (error.response?.data?.message || error.message))
     } finally {
       setSaving(false)
     }
@@ -130,9 +198,9 @@ const OrderingSystemSettings = () => {
   if (loading) return <div className="p-6">Loading settings...</div>
 
   return (
-    <div className="bg-white rounded-lg shadow">
+    <div className="bg-slate-800 rounded-lg shadow border border-slate-700">
       {/* Tabs */}
-      <div className="border-b flex overflow-x-auto">
+      <div className="border-b border-slate-700 flex overflow-x-auto bg-slate-900">
         {[
           { id: 'shipping', label: '🚚 Shipping' },
           { id: 'pricing', label: '💰 Pricing' },
@@ -147,7 +215,7 @@ const OrderingSystemSettings = () => {
             className={`px-4 py-3 font-medium whitespace-nowrap border-b-2 transition ${
               activeTab === tab.id
                 ? 'border-blue-600 text-blue-600'
-                : 'border-transparent text-gray-600 hover:text-gray-900'
+                : 'border-transparent text-slate-400 hover:text-white'
             }`}
           >
             {tab.label}
@@ -156,7 +224,7 @@ const OrderingSystemSettings = () => {
       </div>
 
       {/* Content */}
-      <div className="p-6">
+      <div className="p-6 text-white">
         {/* SHIPPING TAB */}
         {activeTab === 'shipping' && (
           <div className="space-y-6">
@@ -564,10 +632,10 @@ const OrderingSystemSettings = () => {
 
                   <input
                     type="number"
-                    value={promo.value}
+                    value={isNaN(promo.value) ? '' : promo.value}
                     onChange={(e) => {
                       const newPromos = [...promotions]
-                      newPromos[idx].value = parseFloat(e.target.value)
+                      newPromos[idx].value = e.target.value === '' ? 0 : parseFloat(e.target.value)
                       setPromotions(newPromos)
                     }}
                     className="px-3 py-2 border border-gray-300 rounded-lg"
@@ -595,13 +663,13 @@ const OrderingSystemSettings = () => {
       </div>
 
       {/* Save Button */}
-      <div className="border-t p-6 bg-gray-50 flex gap-3">
+      <div className="border-t border-slate-700 p-6 bg-slate-900 flex gap-3">
         <button
           onClick={saveSettings}
           disabled={saving}
           className={`flex items-center gap-2 px-6 py-2 rounded-lg font-semibold text-white ${
             saving
-              ? 'bg-gray-400 cursor-not-allowed'
+              ? 'bg-slate-600 cursor-not-allowed'
               : 'bg-blue-600 hover:bg-blue-700 active:scale-95'
           } transition`}
         >

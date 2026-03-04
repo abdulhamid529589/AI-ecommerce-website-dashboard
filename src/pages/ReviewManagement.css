@@ -38,7 +38,7 @@
 }
 
 .stat-card {
-  background: white;
+  background: #1f2937;
   border-radius: 0.75rem;
   padding: 1.5rem;
   border-left: 4px solid #3b82f6;
@@ -98,7 +98,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  background: white;
+  background: #1f2937;
   border: 1px solid #d1d5db;
   border-radius: 0.5rem;
   padding: 0 0.75rem;
@@ -135,7 +135,7 @@
 
 .filter-btn {
   padding: 0.5rem 1rem;
-  background: white;
+  background: #1f2937;
   border: 1px solid #d1d5db;
   border-radius: 0.5rem;
   cursor: pointer;
@@ -202,7 +202,7 @@
 
 /* Table */
 .reviews-table-container {
-  background: white;
+  background: #1f2937;
   border-radius: 0.75rem;
   overflow: hidden;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -415,7 +415,7 @@
 }
 
 .modal-content {
-  background: white;
+  background: #1f2937;
   border-radius: 0.75rem;
   max-width: 500px;
   width: 100%;

@@ -49,7 +49,7 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
-  background: white;
+  background: #1f2937;
   color: #1f2937;
 }
 
@@ -143,7 +143,7 @@
 }
 
 .metric-card {
-  background: white;
+  background: #1f2937;
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -231,7 +231,7 @@
 }
 
 .recommendation-card {
-  background: white;
+  background: #1f2937;
   border-radius: 12px;
   padding: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -315,7 +315,7 @@
 }
 
 .tip-card {
-  background: white;
+  background: #1f2937;
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -344,7 +344,7 @@
 
 /* Raw Metrics Table */
 .raw-metrics-table {
-  background: white;
+  background: #1f2937;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
